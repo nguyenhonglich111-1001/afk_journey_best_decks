@@ -83,3 +83,12 @@ Beyond PEP 8, a high standard of Python code embraces:
     * **Version Control (`Git`):** Essential for collaboration, tracking changes, and managing different versions of your codebase.
     * **Virtual Environments (`venv`, `Poetry`, `PDM`, `uv`):** Isolate project dependencies to avoid conflicts between projects. Modern tools like Poetry or PDM also handle dependency management and packaging.
     * **CI/CD (Continuous Integration/Continuous Deployment):** Automate testing, linting, and deployment processes to ensure code quality and rapid delivery.
+
+---
+
+## Data Standards
+
+1.  **Card Descriptions:**
+    *   Every card object in `cards.json` must have a `card_function` string.
+    *   This description should provide a clear, human-readable summary of the card's effect, even if the full logic is controlled by other data attributes (like `prd_config` or `value_range`).
+    *   Keep descriptions updated if the core mechanic of a card changes.

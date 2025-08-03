@@ -23,7 +23,7 @@
         },
         {
             "card_name": "Slow Cook",
-            "card_function": "Triggers when flipping Heat Control. Random color +4",
+            "card_function": "Adds +4 to the bonus of all future Heat Control flips.",
             "card_quantity": 2
         }
     ],
