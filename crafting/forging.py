@@ -49,7 +49,7 @@ class ForgingCrafting(BaseCrafting):
 
         # Check for the Copper Stewpot buff for a chance to trigger again
         if state.get('copper_stewpot_buff', False):
-            if random.random() < 0.50:
+            if random.random() < 0.30:
                 _trigger_effect()
         
         return state

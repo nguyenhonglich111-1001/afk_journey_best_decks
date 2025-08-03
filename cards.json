@@ -3,7 +3,7 @@
         {
             "card_name": "Heat Control",
             "card_function": "Random color +3, with a 50% chance to trigger again",
-            "card_quantity": 3
+            "card_quantity": 4
         },
         {
             "card_name": "Cut",
