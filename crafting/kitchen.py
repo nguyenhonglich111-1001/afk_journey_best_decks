@@ -24,26 +24,57 @@ class KitchenCrafting(BaseCrafting):
 
     def heat_control(self, state: State) -> State:
         """
-        Random color +3. Each flip also gets a bonus from any previously
-        played Slow Cook cards. Has a 50% chance to trigger again.
-
-        Args:
-            state: The current simulation state.
-
-        Returns:
-            The modified simulation state.
+        Random color +3. Re-triggers based on a self-correcting PRD system
+        defined in cards.json that persists across a deck's evaluation.
         """
-        # Check for a bonus from previously played Slow Cook cards
-        bonus_per_flip = state.get('slow_cook_bonus_per_flip', 0)
+        # --- 1. Get PRD Parameters and Persistent History ---
+        card_def = next((c for c in self._card_definitions if c['card_name'] == 'Heat Control'), {})
+        prd_config = card_def.get('prd_config', {})
+        
+        base_chance = prd_config.get('base_chance', 0.5)
+        target_average = prd_config.get('target_average', 1.0)
+        correction_factor = prd_config.get('correction_factor', 1.0)
+        max_attempts = prd_config.get('max_attempts', 10)
 
-        # Initial trigger
+        prd_history = state.get('prd_history', {'hc_plays': 0, 'hc_successes': 0})
+        
+        # --- 2. Calculate the Adjusted Chance for this Card Play ---
+        current_plays = prd_history.get('hc_plays', 0)
+        current_successes = prd_history.get('hc_successes', 0)
+
+        if current_plays > 0:
+            current_average = current_successes / current_plays
+            deviation = current_average - target_average
+            adjusted_chance = base_chance - (deviation * correction_factor)
+        else:
+            # For the very first play, use the base chance.
+            adjusted_chance = base_chance
+            
+        # Clamp the chance to a reasonable range (e.g., 5% to 95%)
+        adjusted_chance = max(0.05, min(0.95, adjusted_chance))
+
+        # --- 3. Execute the Card's Core Logic ---
+        bonus_per_flip = state.get('slow_cook_bonus_per_flip', 0)
+        
+        # Initial trigger always happens
         color = self._get_random_color()
         state[color] += (3 + bonus_per_flip)
-
-        # Chance to re-trigger
-        while random.random() < 0.5:
-            color = self._get_random_color()
-            state[color] += (3 + bonus_per_flip)
+        
+        # Re-trigger loop using the adjusted chance
+        successes_this_card = 0
+        for _ in range(max_attempts):
+            if random.random() < adjusted_chance:
+                successes_this_card += 1
+                color = self._get_random_color()
+                state[color] += (3 + bonus_per_flip)
+            else:
+                # The chain is broken on the first failure.
+                break
+        
+        # --- 4. Update the Persistent History ---
+        prd_history['hc_plays'] = current_plays + 1
+        prd_history['hc_successes'] = current_successes + successes_this_card
+        
         return state
 
     def cut(self, state: State) -> State:

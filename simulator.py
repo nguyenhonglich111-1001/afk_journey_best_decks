@@ -33,19 +33,19 @@ class CardSimulator:
     def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> Dict[str, float]:
         """
         Runs a Monte Carlo simulation for a given deck to find its average and max score.
-
-        Args:
-            deck: A tuple of card names representing the deck.
-            simulations: The number of simulation runs to perform.
-
-        Returns:
-            A dictionary containing the 'average_score' and 'max_score'.
         """
         total_score = 0.0
         max_score = 0.0
 
+        # This history object is persistent across all simulations for this one deck.
+        # This allows the self-correcting PRD to work over a large sample size.
+        prd_history = {
+            'hc_plays': 0,
+            'hc_successes': 0,
+        }
+
         for _ in range(simulations):
-            # Reset the state for each simulation run.
+            # Reset the state for each individual simulation run.
             state: State = {
                 'yellow': 1,
                 'blue': 1,
@@ -54,6 +54,8 @@ class CardSimulator:
                 'slow_cook_bonus_per_flip': 0,
                 'charge_count': 0,
                 'first_forge_played': False,
+                # Pass a reference to the persistent history into each run.
+                'prd_history': prd_history,
             }
             if self.active_buff_id:
                 state[self.active_buff_id] = True

@@ -2,8 +2,13 @@
     "kitchen": [
         {
             "card_name": "Heat Control",
-            "card_function": "Random color +3, with a 50% chance to trigger again",
-            "card_quantity": 4
+            "card_quantity": 4,
+            "prd_config": {
+                "base_chance": 0.50,
+                "target_average": 1.0,
+                "correction_factor": 1.0,
+                "max_attempts": 10
+            }
         },
         {
             "card_name": "Cut",
@@ -19,7 +24,7 @@
         {
             "card_name": "Slow Cook",
             "card_function": "Triggers when flipping Heat Control. Random color +4",
-            "card_quantity": 1
+            "card_quantity": 2
         }
     ],
     "forging": [
