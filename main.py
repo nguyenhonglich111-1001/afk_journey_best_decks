@@ -126,7 +126,9 @@ def main() -> None:
                 continue
             for i, result in enumerate(decks):
                 deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
-                print(f"  #{i+1}: Expected Score: {result['score']:.2f}")
+                avg_score = result['average_score']
+                max_score = result['max_score']
+                print(f"  #{i+1}: Expected Score: {avg_score:.2f} | Max Score: {max_score:.0f}")
                 print(f"     Deck: {deck_str}")
 
 if __name__ == "__main__":

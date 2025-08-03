@@ -30,9 +30,19 @@ class CardSimulator:
         self.card_functions = self.crafting.get_card_functions()
         self.active_buff_id = active_buff_id
 
-    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> float:
-        """Runs a Monte Carlo simulation for a given deck to find its average score."""
+    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> Dict[str, float]:
+        """
+        Runs a Monte Carlo simulation for a given deck to find its average and max score.
+
+        Args:
+            deck: A tuple of card names representing the deck.
+            simulations: The number of simulation runs to perform.
+
+        Returns:
+            A dictionary containing the 'average_score' and 'max_score'.
+        """
         total_score = 0.0
+        max_score = 0.0
 
         for _ in range(simulations):
             # Reset the state for each simulation run.
@@ -43,10 +53,8 @@ class CardSimulator:
                 'forge_expert_bonus': 0,
                 'slow_cook_bonus_per_flip': 0,
                 'charge_count': 0,
-                # State for special item buffs
                 'first_forge_played': False,
             }
-            # If a special item buff is active, add its flag to the state
             if self.active_buff_id:
                 state[self.active_buff_id] = True
 
@@ -57,9 +65,13 @@ class CardSimulator:
                 if func:
                     func(state)
 
-            total_score += state['yellow'] * state['blue']
+            current_score = state['yellow'] * state['blue']
+            total_score += current_score
+            if current_score > max_score:
+                max_score = current_score
 
-        return total_score / simulations
+        average_score = total_score / simulations if simulations > 0 else 0
+        return {'average_score': average_score, 'max_score': float(max_score)}
 
     def find_best_decks(self, deck_sizes: List[int], top_n: int = 5) -> Dict[int, List[Dict[str, Any]]]:
         """Generates all possible unique decks, evaluates them, and returns the top N."""
@@ -82,8 +94,12 @@ class CardSimulator:
             print(f"Found {num_decks} unique decks to evaluate...")
 
             for i, deck in enumerate(unique_decks):
-                score = self.evaluate_deck(deck)
-                deck_scores.append({'deck': Counter(deck), 'score': score})
+                scores = self.evaluate_deck(deck)
+                deck_scores.append({
+                    'deck': Counter(deck),
+                    'average_score': scores['average_score'],
+                    'max_score': scores['max_score']
+                })
 
                 progress = (i + 1) / num_decks
                 sys.stdout.write(f"\r  Progress: [{'#' * int(20 * progress):<20}] {i+1}/{num_decks}")
@@ -91,7 +107,7 @@ class CardSimulator:
 
             print("\nEvaluation complete.")
 
-            deck_scores.sort(key=lambda x: x['score'], reverse=True)
+            deck_scores.sort(key=lambda x: x['average_score'], reverse=True)
             results[size] = deck_scores[:top_n]
 
         return results
