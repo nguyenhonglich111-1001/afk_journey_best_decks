@@ -2,71 +2,51 @@
     "kitchen": [
         {
             "card_name": "Heat Control",
-
             "card_function": "Random color +3, with a 50% chance to trigger again",
-
             "card_quantity": 3
         },
-
         {
             "card_name": "Cut",
-
             "card_function": "Adds a random number from 4 to 8 to a random color.",
-
             "card_quantity": 3
         },
-
         {
             "card_name": "Season",
-
             "card_function": "Multiplies a random color by 2.",
-
             "card_quantity": 1
         },
-
         {
             "card_name": "Slow Cook",
-
             "card_function": "Triggers when flipping Heat Control. Random color +4",
-
             "card_quantity": 1
         }
     ],
-
     "forging": [
         {
             "card_name": "Forge Expert",
-
             "card_function": "Random color +3. All future Forge Expert cards gain +3",
-
             "card_quantity": 2,
-
             "attribute": "Artisan"
         },
-
         {
             "card_name": "Forge",
-
             "card_function": "Random color +3.",
-
             "card_quantity": 3,
-
             "attribute": "Artisan"
         },
-
         {
             "card_name": "Ignite",
-
             "card_function": "Random color x2",
-
             "card_quantity": 1
         },
-
         {
             "card_name": "Heat Up",
-
             "card_function": "All future cards attribute Artisan gain +3",
-
+            "card_quantity": 2
+        },
+        {
+            "card_name": "Charge",
+            "card_function": "Next Artisan card x1 affect all colors.",
             "card_quantity": 2
         }
     ]

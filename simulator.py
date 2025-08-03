@@ -46,7 +46,8 @@ class CardSimulator:
                 'blue': 1,
                 'artisan_bonus': 0,
                 'forge_expert_bonus': 0,
-                'slow_cook_bonus_per_flip': 0
+                'slow_cook_bonus_per_flip': 0,
+                'charge_count': 0
             }
 
             # The order of cards being pulled is random
