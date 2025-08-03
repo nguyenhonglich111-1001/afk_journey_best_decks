@@ -48,15 +48,28 @@ class KitchenCrafting(BaseCrafting):
 
     def cut(self, state: State) -> State:
         """
-        Adds a random number from 4 to 8 to a random color.
-        - If the 'Salted Raisin' buff is active, this will always be 8.
+        Adds a bonus to a random color based on the 'Cut' card's defined
+        value_range in cards.json.
+        - If the 'Salted Raisin' buff is active, this will always be the
+          maximum value from the range.
         """
+        # Find the card's definition to get its value_range
+        card_def = next(
+            (card for card in self._card_definitions if card['card_name'] == 'Cut'),
+            None
+        )
+        
+        # Default to a safe range if the card isn't defined for some reason
+        min_val, max_val = (4, 8)
+        if card_def and 'value_range' in card_def:
+            min_val, max_val = card_def['value_range']
+
         color = self._get_random_color()
         
         if state.get('salted_raisin_buff', False):
-            bonus = 8
+            bonus = max_val
         else:
-            bonus = random.randint(4, 8)
+            bonus = random.randint(min_val, max_val)
             
         state[color] += bonus
         return state
