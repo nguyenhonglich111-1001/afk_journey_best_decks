@@ -1,6 +1,7 @@
 # Standard library imports
 import argparse
 import json
+import sys
 from typing import Dict, Type
 
 # Local application imports
@@ -15,13 +16,41 @@ CRAFTING_TYPE_CLASSES: Dict[str, Type[BaseCrafting]] = {
     "forging": ForgingCrafting,
 }
 
+def print_usage_guide():
+    """Prints a helpful guide on how to run the script."""
+    print("Welcome to the AFK Journey Crafting Simulator!")
+    
+    print("\nUsage: python main.py <crafting_type> [--item <item_name>]")
+    
+    # Print available crafting types
+    print("\nAvailable Crafting Types:")
+    for type_name in CRAFTING_TYPE_CLASSES.keys():
+        print(f"  - {type_name}")
+        
+    # Print available special items
+    try:
+        with open('items.json', 'r') as f:
+            items_data = json.load(f)
+        if items_data:
+            print("\nAvailable Special Items (use with --item flag):")
+            for name, data in items_data.items():
+                print(f'  - "{name}" (for deck size {data["deck_size"]})')
+    except (FileNotFoundError, json.JSONDecodeError):
+        # It's okay if items.json doesn't exist or is invalid, just don't show them.
+        pass
+    
+    print("\nExample (Normal): python main.py forging")
+    print('Example (Special): python main.py forging --item "Carve Box"')
+
 def main() -> None:
     """
     Main function to run the crafting simulation.
-
-    It loads card and item data, lets the user choose a crafting type and
-    an optional special item, and runs the simulation to find the best decks.
     """
+    # If run without arguments, print the usage guide and exit.
+    if len(sys.argv) == 1:
+        print_usage_guide()
+        return
+
     parser = argparse.ArgumentParser(description="AFK Journey Crafting Simulator")
     parser.add_argument(
         "crafting_type",
@@ -49,8 +78,6 @@ def main() -> None:
     except json.JSONDecodeError:
         print("Error: A data file is not a valid JSON file.")
         return
-
-    print("Welcome to the AFK Journey Crafting Simulator!")
 
     # --- Simulation Setup ---
     chosen_type_name = args.crafting_type
