@@ -75,7 +75,7 @@ def main() -> None:
     print(f"\n--- Analyzing Crafting Type: {chosen_type_name} ---")
 
     deck_sizes_to_check = [3, 4, 5, 6]
-    top_n_results = 2
+    top_n_results = 1
 
     best_decks = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
 

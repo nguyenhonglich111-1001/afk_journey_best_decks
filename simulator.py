@@ -24,7 +24,7 @@ class CardSimulator:
         self.crafting = crafting_instance
         self.card_functions = self.crafting.get_card_functions()
 
-    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> float:
+    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 20000) -> float:
         """
         Runs a Monte Carlo simulation for a given deck to find its average score.
 
