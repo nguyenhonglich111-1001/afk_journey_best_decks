@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
