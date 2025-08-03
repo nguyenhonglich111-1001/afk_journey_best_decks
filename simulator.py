@@ -3,7 +3,7 @@ import random
 import sys
 from collections import Counter
 from itertools import combinations
-from typing import List, Dict, Tuple, Set, Any
+from typing import List, Dict, Tuple, Set, Any, Optional
 
 # Local application imports
 from crafting.base_crafting import BaseCrafting, State
@@ -13,50 +13,48 @@ class CardSimulator:
     Handles the simulation of card decks to find the ones with the highest
     expected score using Monte Carlo methods.
     """
-    def __init__(self, crafting_instance: BaseCrafting) -> None:
+    def __init__(
+        self,
+        crafting_instance: BaseCrafting,
+        active_buff_id: Optional[str] = None
+    ) -> None:
         """
-        Initializes the simulator with a specific crafting type instance.
+        Initializes the simulator.
 
         Args:
-            crafting_instance: An object that inherits from BaseCrafting
-                               (e.g., KitchenCrafting or ForgingCrafting).
+            crafting_instance: An object that inherits from BaseCrafting.
+            active_buff_id: The unique identifier for a special item buff
+                            to activate for the simulation run.
         """
         self.crafting = crafting_instance
         self.card_functions = self.crafting.get_card_functions()
+        self.active_buff_id = active_buff_id
 
-    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 20000) -> float:
-        """
-        Runs a Monte Carlo simulation for a given deck to find its average score.
-
-        Args:
-            deck (Tuple[str, ...]): A tuple of card names representing the deck.
-            simulations (int): The number of simulation runs to perform.
-                               Defaults to 50000.
-
-        Returns:
-            float: The average score of the deck over all simulations.
-        """
+    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> float:
+        """Runs a Monte Carlo simulation for a given deck to find its average score."""
         total_score = 0.0
 
         for _ in range(simulations):
             # Reset the state for each simulation run.
-            # These are the state variables that card functions can modify.
             state: State = {
                 'yellow': 1,
                 'blue': 1,
                 'artisan_bonus': 0,
                 'forge_expert_bonus': 0,
                 'slow_cook_bonus_per_flip': 0,
-                'charge_count': 0
+                'charge_count': 0,
+                # State for special item buffs
+                'first_forge_played': False,
             }
+            # If a special item buff is active, add its flag to the state
+            if self.active_buff_id:
+                state[self.active_buff_id] = True
 
-            # The order of cards being pulled is random
             shuffled_deck = random.sample(list(deck), len(deck))
 
             for card_name in shuffled_deck:
                 func = self.card_functions.get(card_name)
                 if func:
-                    # The function modifies the state dictionary in place
                     func(state)
 
             total_score += state['yellow'] * state['blue']
@@ -64,19 +62,7 @@ class CardSimulator:
         return total_score / simulations
 
     def find_best_decks(self, deck_sizes: List[int], top_n: int = 5) -> Dict[int, List[Dict[str, Any]]]:
-        """
-        Generates all possible unique decks, evaluates them, and returns the top N.
-
-        Args:
-            deck_sizes (List[int]): A list of deck sizes to evaluate.
-            top_n (int): The number of top-scoring decks to return for each size.
-                         Defaults to 5.
-
-        Returns:
-            A dictionary where keys are deck sizes and values are a list
-            of the top N scoring decks for that size. Each deck is represented
-            as a dictionary containing its score and card composition.
-        """
+        """Generates all possible unique decks, evaluates them, and returns the top N."""
         all_cards: List[str] = self.crafting.get_all_cards()
 
         print(f"Total available cards: {len(all_cards)}")
@@ -89,7 +75,6 @@ class CardSimulator:
                 print(f"Cannot form a deck of size {size}, not enough cards available.")
                 continue
 
-            # Generate unique combinations of cards to avoid redundant simulations
             unique_decks: Set[Tuple[str, ...]] = set(combinations(all_cards, size))
 
             deck_scores: List[Dict[str, Any]] = []
@@ -98,17 +83,14 @@ class CardSimulator:
 
             for i, deck in enumerate(unique_decks):
                 score = self.evaluate_deck(deck)
-                # Store deck as a Counter for readable output
                 deck_scores.append({'deck': Counter(deck), 'score': score})
 
-                # Progress indicator
                 progress = (i + 1) / num_decks
                 sys.stdout.write(f"\r  Progress: [{'#' * int(20 * progress):<20}] {i+1}/{num_decks}")
                 sys.stdout.flush()
 
             print("\nEvaluation complete.")
 
-            # Sort the decks by score in descending order
             deck_scores.sort(key=lambda x: x['score'], reverse=True)
             results[size] = deck_scores[:top_n]
 

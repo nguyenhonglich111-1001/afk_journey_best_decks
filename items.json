@@ -1,0 +1,12 @@
+{
+    "Carve Box": {
+        "deck_size": 4,
+        "buff_id": "carve_box_buff",
+        "description": "The first Forge card affects all colors."
+    },
+    "Copper Stewpot": {
+        "deck_size": 5,
+        "buff_id": "copper_stewpot_buff",
+        "description": "30% chance to trigger Forge Expert 1 extra time."
+    }
+}
