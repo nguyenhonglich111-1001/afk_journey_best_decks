@@ -8,5 +8,10 @@
         "deck_size": 5,
         "buff_id": "copper_stewpot_buff",
         "description": "30% chance to trigger Forge Expert 1 extra time."
+    },
+    "Salted Raisin": {
+        "deck_size": 4,
+        "buff_id": "salted_raisin_buff",
+        "description": "Cutting always yields the highest points (8)."
     }
 }

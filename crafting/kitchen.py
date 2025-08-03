@@ -49,15 +49,16 @@ class KitchenCrafting(BaseCrafting):
     def cut(self, state: State) -> State:
         """
         Adds a random number from 4 to 8 to a random color.
-
-        Args:
-            state: The current simulation state.
-
-        Returns:
-            The modified simulation state.
+        - If the 'Salted Raisin' buff is active, this will always be 8.
         """
         color = self._get_random_color()
-        state[color] += random.randint(4, 8)
+        
+        if state.get('salted_raisin_buff', False):
+            bonus = 8
+        else:
+            bonus = random.randint(4, 8)
+            
+        state[color] += bonus
         return state
 
     def season(self, state: State) -> State:
