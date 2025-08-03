@@ -22,17 +22,26 @@ class ForgingCrafting(BaseCrafting):
 
     def forge_expert(self, state: State) -> State:
         """
-        Random color +3. All future Forge Expert cards gain +3.
-        - Consumes a 'Charge' to affect both colors.
-        - Can be triggered extra times by the 'Copper Stewpot' buff.
+        Applies a bonus and updates the bonus pool using a complex compounding
+        mechanic reverse-engineered from in-game observations.
+        - The bonus pool is only updated by base triggers, not item triggers.
         """
-        # Define the core action of this card as a local function
-        # to make it easy to re-trigger for the Copper Stewpot buff.
-        def _trigger_effect():
+        # This card is being played, so increment the count for this run.
+        state['fe_played_count'] += 1
+        fe_played_count = state['fe_played_count']
+
+        def _trigger_effect(is_base_trigger: bool):
+            """
+            Core logic for a single trigger.
+            - is_base_trigger: Determines if this trigger is from the card
+                               itself or from an item like Copper Stewpot.
+            """
+            # Read the most current bonus values from the state.
             artisan_bonus = state.get('artisan_bonus', 0)
             forge_expert_bonus = state.get('forge_expert_bonus', 0)
             bonus = 3 + artisan_bonus + forge_expert_bonus
 
+            # Apply the bonus score.
             if state.get('charge_count', 0) > 0:
                 state['yellow'] += bonus
                 state['blue'] += bonus
@@ -41,16 +50,19 @@ class ForgingCrafting(BaseCrafting):
                 color = self._get_random_color()
                 state[color] += bonus
             
-            # The self-buff applies regardless of how it was triggered
-            state['forge_expert_bonus'] = forge_expert_bonus + 3
+            # CRUCIAL: The bonus pool is only updated by a card's base trigger.
+            if is_base_trigger:
+                state['forge_expert_bonus'] += (3 * fe_played_count)
 
         # --- Main Execution ---
-        _trigger_effect()
+        # The first trigger is always a base trigger.
+        _trigger_effect(is_base_trigger=True)
 
-        # Check for the Copper Stewpot buff for a chance to trigger again
+        # Check for the Copper Stewpot buff for a chance to trigger again.
+        # This trigger is NOT a base trigger and will not update the bonus pool.
         if state.get('copper_stewpot_buff', False):
             if random.random() < 0.30:
-                _trigger_effect()
+                _trigger_effect(is_base_trigger=False)
         
         return state
 
