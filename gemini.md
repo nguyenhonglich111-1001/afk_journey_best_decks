@@ -8,23 +8,13 @@ This project is a simulator designed to find the optimal deck of cards for diffe
 - `cards.json`: A JSON file that defines the cards, their effects, and quantities for each crafting type (e.g., "kitchen", "forging").
 - `crafting/`: A directory containing the Python implementation for the logic of each card defined in `cards.json`.
 
-## How to Run
-The simulation is run from the command line. You can specify which crafting type to analyze.
-
-### Syntax
-```bash
-python main.py [crafting_type]
-```
-
-### Examples
-To analyze the "kitchen" crafting type:
-```bash
-python main.py kitchen
-```
-
-To analyze the "forging" crafting type:
-```bash
-python main.py forging
-```
-
-If no crafting type is provided, the script will prompt the user to choose from the available types defined in `cards.json`.
+## Instructions
+* always follow the `PYTHON_RULES.md` for Python coding standards overall
+* always check `PROJECT_OVERVIEW.md` before starting a new task
+* always implement error catching handler
+* always implement user-friendly flows
+**Commit Workflow:**
+    1.  **Write to File:** Always first write the complete, multi-line commit message to a temporary file named `.git_commit_message.txt` in the project root.
+    2.  **Commit from File:** Always execute the commit using the command `git commit -F .git_commit_message.txt`.
+    3.  **Do Not Delete:** The `.git_commit_message.txt` file should not be deleted after the commit to allow for reuse.
+* always commit your code, but let the user (you) handle the `git push` operation manually
