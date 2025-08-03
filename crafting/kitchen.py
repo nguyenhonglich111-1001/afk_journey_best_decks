@@ -1,12 +1,18 @@
 import random
-from .base_crafting import BaseCrafting
+from typing import Dict, Callable
+from .base_crafting import BaseCrafting, State
 
 class KitchenCrafting(BaseCrafting):
     """
     Implements the logic for the 'Kitchen' crafting type.
     """
-    def get_card_functions(self):
-        """Maps Kitchen card names to their specific functions."""
+    def get_card_functions(self) -> Dict[str, Callable[[State], State]]:
+        """
+        Maps Kitchen card names to their specific functions.
+
+        Returns:
+            A dictionary mapping card names to their callable functions.
+        """
         return {
             "Heat Control": self.heat_control,
             "Cut": self.cut,
@@ -16,38 +22,69 @@ class KitchenCrafting(BaseCrafting):
 
     # --- Card Function Implementations ---
 
-    def heat_control(self, state):
+    def heat_control(self, state: State) -> State:
         """
         Random color +3. Each flip also gets a bonus from any previously
         played Slow Cook cards. Has a 50% chance to trigger again.
+
+        Args:
+            state: The current simulation state.
+
+        Returns:
+            The modified simulation state.
         """
         # Check for a bonus from previously played Slow Cook cards
         bonus_per_flip = state.get('slow_cook_bonus_per_flip', 0)
-        
+
         # Initial trigger
         color = self._get_random_color()
         state[color] += (3 + bonus_per_flip)
-        
+
         # Chance to re-trigger
-        while random.random() < 0.4:
+        while random.random() < 0.5:
             color = self._get_random_color()
             state[color] += (3 + bonus_per_flip)
         return state
 
-    def cut(self, state):
-        """Adds a random number from 4 to 8 to a random color."""
+    def cut(self, state: State) -> State:
+        """
+        Adds a random number from 4 to 8 to a random color.
+
+        Args:
+            state: The current simulation state.
+
+        Returns:
+            The modified simulation state.
+        """
         color = self._get_random_color()
         state[color] += random.randint(4, 8)
-        # state[color] += 8
         return state
 
-    def season(self, state):
-        """Multiplies a random color by 2."""
+    def season(self, state: State) -> State:
+        """
+        Multiplies a random color by 2.
+
+        Args:
+            state: The current simulation state.
+
+        Returns:
+            The modified simulation state.
+        """
         color = self._get_random_color()
         state[color] *= 2
         return state
 
-    def slow_cook(self, state):
-        """Adds +4 to the bonus that all future Heat Control flips will receive."""
-        state['slow_cook_bonus_per_flip'] = state.get('slow_cook_bonus_per_flip', 0) + 4
+    def slow_cook(self, state: State) -> State:
+        """
+        Adds +4 to the bonus that all future Heat Control flips will receive.
+
+        Args:
+            state: The current simulation state.
+
+        Returns:
+            The modified simulation state.
+        """
+        state['slow_cook_bonus_per_flip'] = state.get(
+            'slow_cook_bonus_per_flip', 0
+        ) + 4
         return state

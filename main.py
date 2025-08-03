@@ -1,19 +1,25 @@
+# Standard library imports
 import json
 import sys
-from simulator import CardSimulator
-from crafting.kitchen import KitchenCrafting
-from crafting.forging import ForgingCrafting
+from typing import Dict, Type
 
-# This dictionary maps the string name of a crafting type to its corresponding class.
-# To add a new crafting type, you would import its class and add it here.
-CRAFTING_TYPE_CLASSES = {
+# Local application imports
+from crafting.base_crafting import BaseCrafting
+from crafting.forging import ForgingCrafting
+from crafting.kitchen import KitchenCrafting
+from simulator import CardSimulator
+
+# This dictionary maps the string name of a crafting type to its class.
+# To add a new crafting type, import its class and add it here.
+CRAFTING_TYPE_CLASSES: Dict[str, Type[BaseCrafting]] = {
     "kitchen": KitchenCrafting,
     "forging": ForgingCrafting,
 }
 
-def main():
+def main() -> None:
     """
     Main function to run the crafting simulation.
+
     It loads card data, lets the user choose a crafting type,
     and runs the simulation to find the best decks.
     """
@@ -28,9 +34,9 @@ def main():
         return
 
     available_types = list(CRAFTING_TYPE_CLASSES.keys())
-    
+
     print("Welcome to the AFK Journey Crafting Simulator!")
-    
+
     chosen_type_name = ""
     # Check for command-line argument for non-interactive use
     if len(sys.argv) > 1 and sys.argv[1] in available_types:
@@ -43,7 +49,7 @@ def main():
     # Fallback to interactive prompt
     else:
         while chosen_type_name not in available_types:
-            print("\nAvailable crafting types:", available_types)
+            print("Available crafting types:", available_types)
             choice = input(f"Enter the crafting type to analyze (e.g., {available_types[0]}): ")
             if choice in available_types:
                 chosen_type_name = choice
@@ -51,7 +57,7 @@ def main():
                 print("Invalid type. Please choose from the list.")
 
     # --- Simulation ---
-    
+
     # Get the specific card data and the correct class for the chosen type
     crafting_data = cards_data.get(chosen_type_name)
     CraftingClass = CRAFTING_TYPE_CLASSES.get(chosen_type_name)
@@ -62,15 +68,15 @@ def main():
 
     # Create an instance of the chosen crafting class (e.g., KitchenCrafting)
     crafting_instance = CraftingClass(crafting_data)
-    
+
     # Create a simulator instance with the chosen crafting logic
     simulator = CardSimulator(crafting_instance)
 
     print(f"\n--- Analyzing Crafting Type: {chosen_type_name} ---")
-    
+
     deck_sizes_to_check = [3, 4, 5, 6]
     top_n_results = 2
-    
+
     best_decks = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
 
     # --- Results ---
