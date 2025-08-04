@@ -14,7 +14,7 @@ from crafting.base_crafting import BaseCrafting, State
 def evaluate_deck_wrapper(args):
     """Helper function to allow instance methods to be used with multiprocessing."""
     simulator_instance, deck = args
-    eval_results = simulator_instance.evaluate_deck(deck) # Returns a dict now
+    eval_results = simulator_instance.evaluate_deck(deck)
     return deck, eval_results
 
 
@@ -27,7 +27,6 @@ class CardSimulator:
         self,
         crafting_instance: BaseCrafting,
         active_buff_id: Optional[str] = None,
-        target_score: Optional[int] = None,
         star_thresholds: Optional[List[int]] = None
     ) -> None:
         """
@@ -36,13 +35,11 @@ class CardSimulator:
         Args:
             crafting_instance: An object that inherits from BaseCrafting.
             active_buff_id: The unique identifier for a special item buff.
-            target_score: The score to check for consistency.
             star_thresholds: A list of scores to check for star-level consistency.
         """
         self.crafting = crafting_instance
         self.card_functions = self.crafting.get_card_functions()
         self.active_buff_id = active_buff_id
-        self.target_score = target_score
         self.star_thresholds = star_thresholds
 
     def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> Dict[str, Any]:
@@ -53,7 +50,6 @@ class CardSimulator:
         on the simulation mode (star chances or single-target consistency).
         """
         total_score = 0.0
-        successful_runs_target = 0
         successful_runs_stars = [0] * len(self.star_thresholds) if self.star_thresholds else []
 
         for _ in range(simulations):
@@ -77,13 +73,11 @@ class CardSimulator:
             final_score = state['yellow'] * state['blue']
             total_score += final_score
 
-            # Check against star thresholds or a single target score
+            # Check against star thresholds
             if self.star_thresholds:
                 for i, threshold in enumerate(self.star_thresholds):
                     if final_score >= threshold:
                         successful_runs_stars[i] += 1
-            elif self.target_score and final_score >= self.target_score:
-                successful_runs_target += 1
 
         # Prepare results
         results = {'score': total_score / simulations}
@@ -92,8 +86,6 @@ class CardSimulator:
                 f"{i+1}_star": (count / simulations) * 100
                 for i, count in enumerate(successful_runs_stars)
             }
-        elif self.target_score:
-            results['consistency'] = (successful_runs_target / simulations) * 100
         
         return results
 
@@ -126,7 +118,6 @@ class CardSimulator:
                 deck_info = {
                     'deck': Counter(deck),
                     'score': eval_results.get('score', 0),
-                    'consistency': eval_results.get('consistency', 0),
                     'star_chances': eval_results.get('star_chances', {})
                 }
                 deck_scores.append(deck_info)
@@ -141,8 +132,7 @@ class CardSimulator:
                     reverse=True
                 )
             else:
-                sort_key = 'consistency' if self.target_score else 'score'
-                deck_scores.sort(key=lambda x: x.get(sort_key, 0), reverse=True)
+                deck_scores.sort(key=lambda x: x.get('score', 0), reverse=True)
             
             results[size] = deck_scores[:top_n]
 

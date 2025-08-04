@@ -62,11 +62,6 @@ def main() -> None:
         type=str,
         help="The name of a special item to use for the simulation."
     )
-    parser.add_argument(
-        "--target-score",
-        type=int,
-        help="Find decks with the highest chance to meet this target score."
-    )
     args = parser.parse_args()
 
     # --- Data Loading ---
@@ -95,7 +90,7 @@ def main() -> None:
 
     crafting_instance = CraftingClass(crafting_data)
     
-    # --- Workflow Selection --- 
+    # --- Workflow Selection ---
     active_buff_id = None
     star_thresholds = None
     top_n_results = 5
@@ -117,9 +112,6 @@ def main() -> None:
         else:
             print("    Mode: Highest Average Score (Item-specific)")
 
-    elif args.target_score:
-        print(f"\n--- Analyzing for Target Score: {args.target_score} ---")
-        print("    Mode: Finding most consistent decks.")
     else:
         print(f"\n--- Analyzing Crafting Type: {chosen_type_name} ---")
         print("    Mode: Finding highest average score decks.")
@@ -127,7 +119,6 @@ def main() -> None:
     simulator = CardSimulator(
         crafting_instance,
         active_buff_id=active_buff_id,
-        target_score=args.target_score,
         star_thresholds=star_thresholds
     )
 
@@ -139,8 +130,6 @@ def main() -> None:
         # Determine the output format based on the simulation mode
         if star_thresholds:
             print(f"\n\n--- Top {top_n_results} Star-Optimized Decks for: {args.item} ---")
-        elif args.target_score:
-            print(f"\n\n--- Top {top_n_results} Most Consistent Decks (Target: {args.target_score}) ---")
         else:
             print(f"\n\n--- Top {top_n_results} Highest-Score Decks ---")
 
@@ -161,11 +150,6 @@ def main() -> None:
                         chance = star_chances.get(star_key, 0)
                         threshold = star_thresholds[star_num - 1]
                         print(f"     {star_num}-Star ({threshold} pts): {chance:.2f}%")
-                    print(f"     Deck: {deck_str}")
-                elif args.target_score:
-                    consistency = result.get('consistency', 0)
-                    print(f"  #{i+1}: Consistency: {consistency:.2f}%")
-                    print(f"     Avg Score: {avg_score:.2f}")
                     print(f"     Deck: {deck_str}")
                 else:
                     print(f"  #{i+1}: Expected Score: {avg_score:.2f}")
