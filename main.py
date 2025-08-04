@@ -20,9 +20,10 @@ def print_usage_guide():
     """Prints a helpful guide on how to run the script."""
     print("Welcome to the AFK Journey Crafting Simulator!")
     
-    print("Usage:")
-    print("  python main.py --item <item_name>      (for item-specific analysis)")
-    print("  python main.py <crafting_type>         (for general analysis)")
+    print("\nUsage:")
+    print("  python main.py --item <item_name>      (for a single item analysis)")
+    print("  python main.py --item all              (for a batch analysis of all items)")
+    print("  python main.py <crafting_type>         (for a general analysis)")
 
     # Print available crafting types
     print("\nAvailable Crafting Types (for general analysis):")
@@ -41,8 +42,79 @@ def print_usage_guide():
     except (FileNotFoundError, json.JSONDecodeError):
         pass
     
-    print("\nExample (Item-specific): python main.py --item \"Carve Box\"")
+    print("\nExample (Single Item): python main.py --item \"Carve Box\"")
+    print("Example (Batch): python main.py --item all")
     print("Example (General): python main.py forging")
+
+
+def run_simulation_for_item(item_name: str, item_data: dict, cards_data: dict) -> dict:
+    """Runs a full simulation for a single item and returns the results."""
+    chosen_type_name = item_data.get('crafting_type')
+    if not chosen_type_name:
+        print(f"Warning: Item '{item_name}' is missing 'crafting_type'. Skipping.")
+        return {}
+
+    print(f"\n--- Analyzing for Item: {item_name} ---")
+    
+    crafting_data = cards_data.get(chosen_type_name)
+    CraftingClass = CRAFTING_TYPE_CLASSES.get(chosen_type_name)
+    
+    if not crafting_data or not CraftingClass:
+        print(f"Warning: No data or implementation for '{chosen_type_name}'. Skipping.")
+        return {}
+
+    crafting_instance = CraftingClass(crafting_data)
+    
+    simulator = CardSimulator(
+        crafting_instance,
+        active_buff_id=item_data.get('buff_id'),
+        star_thresholds=item_data.get('star_thresholds')
+    )
+    
+    deck_sizes_to_check = [item_data['deck_size']]
+    best_decks = simulator.find_best_decks(deck_sizes_to_check)
+    
+    # Attach metadata to the results for the final report
+    best_decks['item_name'] = item_name
+    best_decks['star_thresholds'] = item_data.get('star_thresholds')
+    
+    return best_decks
+
+
+def format_results_for_discord(all_results: list) -> str:
+    """Formats a list of simulation results into a single Discord-friendly string."""
+    report_parts = []
+    for result_data in all_results:
+        item_name = result_data.get('item_name', 'Unknown Item')
+        star_thresholds = result_data.get('star_thresholds')
+        
+        report_parts.append(f"**Item: {item_name}**")
+        
+        if not star_thresholds:
+            report_parts.append("- No star thresholds defined.")
+            continue
+
+        # The results are nested under the deck size key
+        deck_size = list(result_data.keys())[0]
+        decks = result_data[deck_size]
+
+        for star_num in range(1, len(star_thresholds) + 1):
+            star_key = f"{star_num}_star"
+            result = decks.get(star_key)
+            if not result:
+                continue
+
+            threshold = star_thresholds[star_num - 1]
+            chance = result.get('star_chances', {}).get(star_key, 0)
+            deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
+            
+            report_parts.append(
+                f"- **Best for {star_num}-Star ({threshold} pts):** {chance:.2f}% | Deck: {deck_str}"
+            )
+        report_parts.append("---")
+
+    return "\n".join(report_parts)
+
 
 def main() -> None:
     """
@@ -59,16 +131,14 @@ def main() -> None:
     parser.add_argument(
         "--item",
         type=str,
-        help="The name of a special item to use for the simulation."
+        help="The name of a special item to use for the simulation, or 'all' for batch mode."
     )
     args = parser.parse_args()
 
     # --- Data Loading ---
-    items_data = {}
     try:
         with open('cards.json', 'r') as f:
             cards_data = json.load(f)
-        # Always load items_data to check for item-specific crafting_type
         with open('items.json', 'r') as f:
             items_data = json.load(f)
     except FileNotFoundError as e:
@@ -78,7 +148,23 @@ def main() -> None:
         print("Error: A data file is not a valid JSON file.")
         return
 
-    # --- Workflow Selection & Setup ---
+    # --- Workflow Selection ---
+    if args.item == "all":
+        print("--- Running simulations for all items. This may take a while... ---")
+        all_results = []
+        for item_name, item_data in items_data.items():
+            # Only run for items that have star thresholds
+            if 'star_thresholds' in item_data:
+                result = run_simulation_for_item(item_name, item_data, cards_data)
+                if result:
+                    all_results.append(result)
+        
+        discord_report = format_results_for_discord(all_results)
+        print("\n\n--- Batch Simulation Report ---")
+        print(discord_report)
+        return
+
+    # --- Single Run Logic (Item or General) ---
     chosen_type_name = None
     active_buff_id = None
     star_thresholds = None
@@ -115,11 +201,10 @@ def main() -> None:
         print("    Mode: Finding highest average score decks.")
     
     else:
-        # If neither is provided, print usage and exit.
         print_usage_guide()
         return
 
-    # --- Simulation Setup ---
+    # --- Simulation Setup & Execution for Single Run ---
     crafting_data = cards_data.get(chosen_type_name)
     CraftingClass = CRAFTING_TYPE_CLASSES.get(chosen_type_name)
     
@@ -134,13 +219,11 @@ def main() -> None:
         active_buff_id=active_buff_id,
         star_thresholds=star_thresholds
     )
-
-    # --- Simulation Execution ---
+    
     best_decks = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
 
-    # --- Results ---
+    # --- Results for Single Run ---
     if best_decks:
-        # Determine the output format based on the simulation mode
         if star_thresholds:
             print(f"\n\n--- Best Deck Per Star Level for: {item_name_for_display} ---")
         else:
@@ -170,12 +253,12 @@ def main() -> None:
                     print(f"  Avg Score: {avg_score:.2f}")
                     print(f"  Deck: {deck_str}")
             else:
-                # This is now the fallback for the default mode
                 for i, result in enumerate(decks):
                     deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
                     avg_score = result.get('score', 0)
                     print(f"  #{i+1}: Expected Score: {avg_score:.2f}")
                     print(f"     Deck: {deck_str}")
+
 
 
 if __name__ == "__main__":
