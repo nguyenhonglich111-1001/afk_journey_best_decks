@@ -24,26 +24,26 @@ class KitchenCrafting(BaseCrafting):
 
     def heat_control(self, state: State) -> State:
         """
-        Random color +3. Each flip also gets a bonus from any previously
-        played Slow Cook cards. Has a 50% chance to trigger again.
-
-        Args:
-            state: The current simulation state.
-
-        Returns:
-            The modified simulation state.
+        Random color +3. Each flip also gets a bonus to both colors from any
+        previously played Slow Cook cards. Has a 50% chance to trigger again.
         """
-        # Check for a bonus from previously played Slow Cook cards
-        bonus_per_flip = state.get('slow_cook_bonus_per_flip', 0)
+        all_color_bonus = state.get('slow_cook_all_color_bonus', 0)
+
+        def _trigger_flip():
+            # Apply the bonus to both colors
+            state['yellow'] += all_color_bonus
+            state['blue'] += all_color_bonus
+            # Apply the base card effect to a random color
+            color = self._get_random_color()
+            state[color] += 3
 
         # Initial trigger
-        color = self._get_random_color()
-        state[color] += (3 + bonus_per_flip)
+        _trigger_flip()
 
         # Chance to re-trigger
         while random.random() < 0.5:
-            color = self._get_random_color()
-            state[color] += (3 + bonus_per_flip)
+            _trigger_flip()
+            
         return state
 
     def cut(self, state: State) -> State:
@@ -90,14 +90,8 @@ class KitchenCrafting(BaseCrafting):
 
     def slow_cook(self, state: State) -> State:
         """
-        Adds +2 to both yellow and blue colors.
-
-        Args:
-            state: The current simulation state.
-
-        Returns:
-            The modified simulation state.
+        Adds +2 to the bonus that all future Heat Control flips will receive
+        for both colors. This effect stacks.
         """
-        state['yellow'] += 2
-        state['blue'] += 2
+        state['slow_cook_all_color_bonus'] = state.get('slow_cook_all_color_bonus', 0) + 2
         return state

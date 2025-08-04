@@ -52,6 +52,7 @@ class CardSimulator:
                 'artisan_bonus': 0,
                 'forge_expert_bonus': 0,
                 'slow_cook_bonus_per_flip': 0,
+                'slow_cook_all_color_bonus': 0,
                 'charge_count': 0,
                 # State for special item buffs
                 'first_forge_played': False,

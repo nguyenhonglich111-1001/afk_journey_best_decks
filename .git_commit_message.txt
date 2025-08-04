@@ -1,8 +1,9 @@
-feat: Update card effects for Forge and Slow Cook
+fix: Correct Slow Cook card mechanic
 
-This commit updates the effects of two cards based on recent upgrades.
+This commit corrects the implementation of the 'Slow Cook' card based on user feedback.
 
-- The 'Forge' card's bonus has been increased from +3 to +5.
-- The 'Slow Cook' card's effect has been changed from a conditional buff to a direct '+2' to all colors.
+The previous implementation was incorrect. The updated logic is as follows:
+- 'Slow Cook' now provides a stacking bonus to 'Heat Control'.
+- Each 'Heat Control' flip now adds the accumulated 'Slow Cook' bonus to both colors, in addition to its base effect.
 
-The changes are reflected in both the card logic implementation and the descriptions in `cards.json`.
+The changes are reflected in the card logic, the simulator's initial state, and the card's description in `cards.json`.
