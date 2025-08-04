@@ -90,7 +90,7 @@ class KitchenCrafting(BaseCrafting):
 
     def slow_cook(self, state: State) -> State:
         """
-        Adds +4 to the bonus that all future Heat Control flips will receive.
+        Adds +2 to both yellow and blue colors.
 
         Args:
             state: The current simulation state.
@@ -98,7 +98,6 @@ class KitchenCrafting(BaseCrafting):
         Returns:
             The modified simulation state.
         """
-        state['slow_cook_bonus_per_flip'] = state.get(
-            'slow_cook_bonus_per_flip', 0
-        ) + 4
+        state['yellow'] += 2
+        state['blue'] += 2
         return state

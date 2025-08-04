@@ -18,7 +18,7 @@
         },
         {
             "card_name": "Slow Cook",
-            "card_function": "Triggers when flipping Heat Control. Random color +4",
+            "card_function": "All colors +2",
             "card_quantity": 1
         }
     ],
@@ -26,12 +26,12 @@
         {
             "card_name": "Forge Expert",
             "card_function": "Random color +3. All future Forge Expert cards gain +3",
-            "card_quantity": 2,
+            "card_quantity": 3,
             "attribute": "Artisan"
         },
         {
             "card_name": "Forge",
-            "card_function": "Random color +3.",
+            "card_function": "Random color +5.",
             "card_quantity": 3,
             "attribute": "Artisan"
         },

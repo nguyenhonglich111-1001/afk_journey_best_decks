@@ -1,0 +1,8 @@
+feat: Update card effects for Forge and Slow Cook
+
+This commit updates the effects of two cards based on recent upgrades.
+
+- The 'Forge' card's bonus has been increased from +3 to +5.
+- The 'Slow Cook' card's effect has been changed from a conditional buff to a direct '+2' to all colors.
+
+The changes are reflected in both the card logic implementation and the descriptions in `cards.json`.
