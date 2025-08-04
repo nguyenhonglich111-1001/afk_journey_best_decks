@@ -62,6 +62,11 @@ def main() -> None:
         type=str,
         help="The name of a special item to use for the simulation."
     )
+    parser.add_argument(
+        "--target-score",
+        type=int,
+        help="Find decks with the highest chance to meet this target score."
+    )
     args = parser.parse_args()
 
     # --- Data Loading ---
@@ -90,9 +95,16 @@ def main() -> None:
 
     crafting_instance = CraftingClass(crafting_data)
     
-    # --- Workflow Selection (Normal vs. Special Item) ---
+    # --- Workflow Selection (Normal vs. Special Item vs. Target Score) ---
     active_buff_id = None
-    top_n_results = 1
+    top_n_results = 1 # Show more results by default
+    deck_sizes_to_check = [3, 4, 5, 6]
+
+    # Initialize the simulator with the target score if provided
+    simulator = CardSimulator(
+        crafting_instance,
+        target_score=args.target_score
+    )
 
     if args.item:
         # Special Item Workflow
@@ -106,19 +118,38 @@ def main() -> None:
         
         deck_sizes_to_check = [item['deck_size']]
         active_buff_id = item['buff_id']
-        simulator = CardSimulator(crafting_instance, active_buff_id=active_buff_id)
+        # Re-initialize the simulator with the buff
+        simulator = CardSimulator(
+            crafting_instance,
+            active_buff_id=active_buff_id,
+            target_score=args.target_score
+        )
+    elif args.target_score:
+        # Target Score Workflow
+        print(f"\n--- Analyzing for Target Score: {args.target_score} ---")
+        print("    Mode: Finding most consistent decks.")
     else:
-        # Normal Workflow
+        # Normal Workflow (Highest Average Score)
         print(f"\n--- Analyzing Crafting Type: {chosen_type_name} ---")
-        deck_sizes_to_check = [3, 4, 5, 6]
-        simulator = CardSimulator(crafting_instance)
+        print("    Mode: Finding highest average score decks.")
 
     # --- Simulation Execution ---
     best_decks = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
 
     # --- Results ---
     if best_decks:
-        print(f"\n\n--- Top {top_n_results} Highest-Score Decks ---")
+        # Determine the metric to display based on the simulation mode
+        if args.target_score:
+            print(f"\n\n--- Top {top_n_results} Most Consistent Decks (Target: {args.target_score}) ---")
+            metric_key = 'consistency'
+            metric_label = 'Consistency'
+            metric_unit = '%'
+        else:
+            print(f"\n\n--- Top {top_n_results} Highest-Score Decks ---")
+            metric_key = 'score'
+            metric_label = 'Expected Score'
+            metric_unit = ''
+
         for size, decks in best_decks.items():
             print(f"\n--- Deck Size: {size} ---")
             if not decks:
@@ -126,7 +157,16 @@ def main() -> None:
                 continue
             for i, result in enumerate(decks):
                 deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
-                print(f"  #{i+1}: Expected Score: {result['score']:.2f}")
+                main_metric_val = result[metric_key]
+                avg_score = result['score']
+                
+                # Format the output string
+                if args.target_score:
+                    print(f"  #{i+1}: {metric_label}: {main_metric_val:.2f}{metric_unit}")
+                    print(f"     Avg Score: {avg_score:.2f}")
+                else:
+                    print(f"  #{i+1}: {metric_label}: {avg_score:.2f}")
+
                 print(f"     Deck: {deck_str}")
 
 if __name__ == "__main__":

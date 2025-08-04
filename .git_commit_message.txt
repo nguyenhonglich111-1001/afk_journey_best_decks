@@ -1,9 +1,8 @@
-fix: Correct Slow Cook card mechanic
+feat: Add consistency simulation mode
 
-This commit corrects the implementation of the 'Slow Cook' card based on user feedback.
+This commit introduces a new simulation mode to evaluate decks based on their consistency in reaching a specific target score.
 
-The previous implementation was incorrect. The updated logic is as follows:
-- 'Slow Cook' now provides a stacking bonus to 'Heat Control'.
-- Each 'Heat Control' flip now adds the accumulated 'Slow Cook' bonus to both colors, in addition to its base effect.
-
-The changes are reflected in the card logic, the simulator's initial state, and the card's description in `cards.json`.
+- A `--target-score` command-line argument has been added to `main.py`.
+- When this argument is used, the simulator calculates the percentage of runs that meet or exceed the target, sorting decks by this "consistency" metric.
+- The `CardSimulator` and its helper functions in `simulator.py` have been updated to handle both the average score and the new consistency calculation.
+- The output in `main.py` has been adjusted to clearly display the results for either mode, ensuring the user knows whether they are viewing decks sorted by highest score or highest consistency.
