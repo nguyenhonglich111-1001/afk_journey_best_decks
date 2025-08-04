@@ -4,7 +4,7 @@
         "deck_size": 4,
         "buff_id": "carve_box_buff",
         "description": "The first Forge card affects all colors.",
-        "star_thresholds": [152,180,182,190]
+        "star_thresholds": [152, 180, 182, 190]
     },
     "Copper Stewpot": {
         "crafting_type": "forging",
@@ -19,5 +19,30 @@
         "buff_id": "salted_raisin_buff",
         "description": "Cutting always yields the highest points (8).",
         "star_thresholds": [344, 440, 462, 647]
+    },
+    "Wodden Arrow": {
+        "crafting_type": "forging",
+        "deck_size": 5,
+        "star_thresholds": [108, 130, 163]
+    },
+    "Fine Carver": {
+        "crafting_type": "forging",
+        "deck_size": 5,
+        "star_thresholds": [46, 86]
+    },
+    "Spice Bread": {
+        "crafting_type": "kitchen",
+        "deck_size": 5,
+        "star_thresholds": [372, 448, 635]
+    },
+    "Toast": {
+        "crafting_type": "kitchen",
+        "deck_size": 5,
+        "star_thresholds": [102, 159]
+    },
+    "Grape Vinegar": {
+        "crafting_type": "kitchen",
+        "deck_size": 6,
+        "star_thresholds": [1070, 1270, 1420, 1740]
     }
 }

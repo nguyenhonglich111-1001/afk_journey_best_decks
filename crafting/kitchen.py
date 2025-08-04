@@ -25,27 +25,8 @@ class KitchenCrafting(BaseCrafting):
     def heat_control(self, state: State) -> State:
         """
         Random color +3. Each flip also gets a bonus to both colors from any
-        previously played Slow Cook cards. Has a 50% chance to trigger again.
-        """
-        all_color_bonus = state.get('slow_cook_all_color_bonus', 0)
-
-        def _trigger_flip():
-            # Apply the bonus to both colors
-            state['yellow'] += all_color_bonus
-            state['blue'] += all_color_bonus
-            # Apply the base card effect to a random color
-            color = self._get_random_color()
-            state[color] += 3
-
-        # Initial trigger
-        _trigger_flip()
-
-        # Chance to re-trigger
-        while random.random() < 0.5:
-            _trigger_flip()
-            
-        Random color +3. Re-triggers based on a self-correcting PRD system
-        defined in cards.json that persists across a deck's evaluation.
+        previously played Slow Cook cards. Re-triggers based on a self-correcting
+        PRD system defined in cards.json.
         """
         # --- 1. Get PRD Parameters and Persistent History ---
         card_def = next((c for c in self._card_definitions if c['card_name'] == 'Heat Control'), {})
@@ -74,19 +55,24 @@ class KitchenCrafting(BaseCrafting):
         adjusted_chance = max(0.05, min(0.95, adjusted_chance))
 
         # --- 3. Execute the Card's Core Logic ---
-        bonus_per_flip = state.get('slow_cook_bonus_per_flip', 0)
-        
+        all_color_bonus = state.get('slow_cook_all_color_bonus', 0)
+
+        def _trigger_flip():
+            """Applies the bonus to both colors and the base effect to one."""
+            state['yellow'] += all_color_bonus
+            state['blue'] += all_color_bonus
+            color = self._get_random_color()
+            state[color] += 3
+
         # Initial trigger always happens
-        color = self._get_random_color()
-        state[color] += (3 + bonus_per_flip)
+        _trigger_flip()
         
         # Re-trigger loop using the adjusted chance
         successes_this_card = 0
         for _ in range(max_attempts):
             if random.random() < adjusted_chance:
                 successes_this_card += 1
-                color = self._get_random_color()
-                state[color] += (3 + bonus_per_flip)
+                _trigger_flip()
             else:
                 # The chain is broken on the first failure.
                 break

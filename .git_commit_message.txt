@@ -1,11 +1,10 @@
-feat: Remove consistency simulation mode
+chore: Project health check and state verification
 
-This commit removes the `--target-score` command-line argument and all associated logic for the "consistency" simulation mode.
+This commit encompasses a full health check of the project after a significant branch merge. It verifies, corrects, and documents the simulation's state management and card logic.
 
-The key changes include:
-- Deleting the `--target-score` argument from `main.py`.
-- Removing the `target_score` attribute and related calculations from `simulator.py`.
-- Simplifying the `evaluate_deck` and `find_best_decks` methods in `simulator.py` to only handle average score calculation and sorting.
-- Cleaning up the result printing logic in `main.py` to remove conditional formatting for the consistency mode.
-
-The application's default and only behavior (outside of special item modes) is now to find the decks with the highest average score.
+Key changes include:
+- Conducted a manual, step-by-step execution of all application modes (general, single-item, and batch) to ensure stability.
+- Fixed a critical syntax error in `crafting/kitchen.py` that prevented the app from running.
+- Corrected the simulation's initial state in `simulator.py`, removing an unused variable and restoring a mistakenly deleted one.
+- Added `requirements.txt` to formalize project dependencies.
+- Created detailed analysis and documentation plans for the post-merge health check and the complete card/item logic.
