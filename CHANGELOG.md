@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2025-08-04]
+
+### Features
+- **Add Alchemy Crafting Type**: Introduced the new "alchemy" crafting type with four unique cards: `Ingredient`, `Grind`, `Enchant`, and `Distill`.
+- **Implement New Game Mechanics**: Added logic for highest/lowest color targeting and a future-card debuff system for the `Enchant` card.
+- **Add New Alchemy Item**: Added the "Growth Serum" item to `items.json`.
+
+### Fixes
+- **Correct Enchant Card Logic**: Updated the `Enchant` card to be affected by its own debuff, ensuring simulation accuracy based on in-game scenarios.
+- **Fix Critical Syntax Error**: Resolved a syntax error in `crafting/kitchen.py` that was preventing the application from running.
+- **Correct Simulation State**: Removed an unused state variable (`slow_cook_bonus_per_flip`) and restored a missing one (`forge_expert_bonus`) in `simulator.py`.
+
+### Chore
+- **Project Health Check**: Performed a full, end-to-end verification of the project's stability and functionality after a major branch merge.
+- **Add Dependency Management**: Created a `requirements.txt` file to formalize project dependencies.
+- **Add Analysis Documentation**: Created comprehensive plans documenting the post-merge health check and the complete state/card logic.
+
 ## [2025-08-03]
 
 ### Features
