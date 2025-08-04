@@ -1,0 +1,11 @@
+feat: Remove consistency simulation mode
+
+This commit removes the `--target-score` command-line argument and all associated logic for the "consistency" simulation mode.
+
+The key changes include:
+- Deleting the `--target-score` argument from `main.py`.
+- Removing the `target_score` attribute and related calculations from `simulator.py`.
+- Simplifying the `evaluate_deck` and `find_best_decks` methods in `simulator.py` to only handle average score calculation and sorting.
+- Cleaning up the result printing logic in `main.py` to remove conditional formatting for the consistency mode.
+
+The application's default and only behavior (outside of special item modes) is now to find the decks with the highest average score.

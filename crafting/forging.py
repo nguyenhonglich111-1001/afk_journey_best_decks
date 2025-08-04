@@ -73,7 +73,7 @@ class ForgingCrafting(BaseCrafting):
         - The first Forge card played is affected by the 'Carve Box' buff.
         """
         artisan_bonus = state.get('artisan_bonus', 0)
-        bonus = 3 + artisan_bonus
+        bonus = 5 + artisan_bonus
 
         # Check for the Carve Box buff, which affects the first Forge card
         is_first_forge = not state.get('first_forge_played', False)

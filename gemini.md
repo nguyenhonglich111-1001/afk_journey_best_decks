@@ -18,3 +18,5 @@ This project is a simulator designed to find the optimal deck of cards for diffe
     2.  **Commit from File:** Always execute the commit using the command `git commit -F .git_commit_message.txt`.
     3.  **Do Not Delete:** The `.git_commit_message.txt` file should not be deleted after the commit to allow for reuse.
 * always commit your code, but let the user (you) handle the `git push` operation manually
+* always not change the value of `top_n_results` in `main.py`, the user can change it manually if needed.
+* always append to the `.gitignore` file if you add new files that should not be tracked by Git. Don't delete existing entries.

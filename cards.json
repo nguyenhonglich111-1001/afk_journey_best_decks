@@ -23,20 +23,20 @@
         },
         {
             "card_name": "Slow Cook",
-            "card_function": "Adds +4 to the bonus of all future Heat Control flips.",
-            "card_quantity": 2
+            "card_function": "All future Heat Control flips gain +2 to both colors.",
+            "card_quantity": 1
         }
     ],
     "forging": [
         {
             "card_name": "Forge Expert",
             "card_function": "Random color +3. All future Forge Expert cards gain +3",
-            "card_quantity": 2,
+            "card_quantity": 3,
             "attribute": "Artisan"
         },
         {
             "card_name": "Forge",
-            "card_function": "Random color +3.",
+            "card_function": "Random color +5.",
             "card_quantity": 3,
             "attribute": "Artisan"
         },

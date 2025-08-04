@@ -24,6 +24,26 @@ class KitchenCrafting(BaseCrafting):
 
     def heat_control(self, state: State) -> State:
         """
+        Random color +3. Each flip also gets a bonus to both colors from any
+        previously played Slow Cook cards. Has a 50% chance to trigger again.
+        """
+        all_color_bonus = state.get('slow_cook_all_color_bonus', 0)
+
+        def _trigger_flip():
+            # Apply the bonus to both colors
+            state['yellow'] += all_color_bonus
+            state['blue'] += all_color_bonus
+            # Apply the base card effect to a random color
+            color = self._get_random_color()
+            state[color] += 3
+
+        # Initial trigger
+        _trigger_flip()
+
+        # Chance to re-trigger
+        while random.random() < 0.5:
+            _trigger_flip()
+            
         Random color +3. Re-triggers based on a self-correcting PRD system
         defined in cards.json that persists across a deck's evaluation.
         """
@@ -121,15 +141,8 @@ class KitchenCrafting(BaseCrafting):
 
     def slow_cook(self, state: State) -> State:
         """
-        Adds +4 to the bonus that all future Heat Control flips will receive.
-
-        Args:
-            state: The current simulation state.
-
-        Returns:
-            The modified simulation state.
+        Adds +2 to the bonus that all future Heat Control flips will receive
+        for both colors. This effect stacks.
         """
-        state['slow_cook_bonus_per_flip'] = state.get(
-            'slow_cook_bonus_per_flip', 0
-        ) + 4
+        state['slow_cook_all_color_bonus'] = state.get('slow_cook_all_color_bonus', 0) + 2
         return state
