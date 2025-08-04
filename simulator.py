@@ -89,14 +89,17 @@ class CardSimulator:
         
         return results
 
-    def find_best_decks(self, deck_sizes: List[int], top_n: int = 5) -> Dict[int, List[Dict[str, Any]]]:
-        """Generates all possible unique decks, evaluates them, and returns the top N."""
+    def find_best_decks(self, deck_sizes: List[int], top_n: int = 5) -> Dict[int, Any]:
+        """
+        Generates all possible unique decks, evaluates them, and returns the top
+        results based on the simulation mode.
+        """
         all_cards: List[str] = self.crafting.get_all_cards()
 
         print(f"Total available cards: {len(all_cards)}")
         print(f"Card pool: {self.crafting.get_card_pool_info()}")
 
-        results: Dict[int, List[Dict[str, Any]]] = {}
+        results: Dict[int, Any] = {}
         for size in deck_sizes:
             print(f"\n--- Evaluating decks of size {size} ---")
             if size > len(all_cards):
@@ -124,17 +127,22 @@ class CardSimulator:
 
             print("\nEvaluation complete.")
 
-            # Sort based on the simulation mode
+            # --- Analysis based on simulation mode ---
             if self.star_thresholds:
-                num_stars = len(self.star_thresholds)
-                deck_scores.sort(
-                    key=lambda x: tuple(x.get('star_chances', {}).get(f"{i}_star", 0) for i in range(num_stars, 0, -1)) + (x.get('score', 0),),
-                    reverse=True
-                )
+                best_decks_for_stars: Dict[str, Dict[str, Any]] = {}
+                for i in range(1, len(self.star_thresholds) + 1):
+                    star_key = f"{i}_star"
+                    # Find the deck with the highest chance for this specific star
+                    best_deck = max(
+                        deck_scores,
+                        key=lambda x: x.get('star_chances', {}).get(star_key, 0)
+                    )
+                    best_decks_for_stars[star_key] = best_deck
+                results[size] = best_decks_for_stars
             else:
+                # Default behavior: sort by highest average score
                 deck_scores.sort(key=lambda x: x.get('score', 0), reverse=True)
-            
-            results[size] = deck_scores[:top_n]
+                results[size] = deck_scores[:top_n]
 
         return results
 

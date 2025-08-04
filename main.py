@@ -129,7 +129,7 @@ def main() -> None:
     if best_decks:
         # Determine the output format based on the simulation mode
         if star_thresholds:
-            print(f"\n\n--- Top {top_n_results} Star-Optimized Decks for: {args.item} ---")
+            print(f"\n\n--- Best Deck Per Star Level for: {args.item} ---")
         else:
             print(f"\n\n--- Top {top_n_results} Highest-Score Decks ---")
 
@@ -138,20 +138,29 @@ def main() -> None:
             if not decks:
                 print("  No results.")
                 continue
-            for i, result in enumerate(decks):
-                deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
-                avg_score = result.get('score', 0)
 
-                if star_thresholds:
-                    print(f"  #{i+1}: Avg Score: {avg_score:.2f}")
-                    star_chances = result.get('star_chances', {})
-                    for star_num in range(1, len(star_thresholds) + 1):
-                        star_key = f"{star_num}_star"
-                        chance = star_chances.get(star_key, 0)
-                        threshold = star_thresholds[star_num - 1]
-                        print(f"     {star_num}-Star ({threshold} pts): {chance:.2f}%")
-                    print(f"     Deck: {deck_str}")
-                else:
+            if star_thresholds:
+                for star_num in range(1, len(star_thresholds) + 1):
+                    star_key = f"{star_num}_star"
+                    result = decks.get(star_key)
+                    if not result:
+                        continue
+
+                    threshold = star_thresholds[star_num - 1]
+                    print(f"\n--- Best Deck for {star_num}-Star ({threshold} pts) ---")
+                    
+                    deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
+                    avg_score = result.get('score', 0)
+                    chance = result.get('star_chances', {}).get(star_key, 0)
+
+                    print(f"  Chance to reach {star_num}-Star: {chance:.2f}%")
+                    print(f"  Avg Score: {avg_score:.2f}")
+                    print(f"  Deck: {deck_str}")
+            else:
+                # This is now the fallback for the default mode
+                for i, result in enumerate(decks):
+                    deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
+                    avg_score = result.get('score', 0)
                     print(f"  #{i+1}: Expected Score: {avg_score:.2f}")
                     print(f"     Deck: {deck_str}")
 
