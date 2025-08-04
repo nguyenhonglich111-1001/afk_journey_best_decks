@@ -10,12 +10,14 @@ from typing import Dict, Type
 from crafting.base_crafting import BaseCrafting
 from crafting.forging import ForgingCrafting
 from crafting.kitchen import KitchenCrafting
+from crafting.alchemy import AlchemyCrafting
 from simulator import CardSimulator
 
 # This dictionary maps the string name of a crafting type to its class.
 CRAFTING_TYPE_CLASSES: Dict[str, Type[BaseCrafting]] = {
     "kitchen": KitchenCrafting,
     "forging": ForgingCrafting,
+    "alchemy": AlchemyCrafting,
 }
 
 def print_usage_guide():

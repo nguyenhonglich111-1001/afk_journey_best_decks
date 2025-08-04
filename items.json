@@ -44,5 +44,11 @@
         "crafting_type": "kitchen",
         "deck_size": 6,
         "star_thresholds": [1070, 1270, 1420, 1740]
+    },
+    "Growth Serum": {
+        "crafting_type": "alchemy",
+        "deck_size": 3,
+        "description": "A basic alchemy item.",
+        "star_thresholds": [12, 27]
     }
 }

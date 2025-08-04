@@ -55,5 +55,27 @@
             "card_function": "Next Artisan card x1 affect all colors.",
             "card_quantity": 2
         }
+    ],
+    "alchemy": [
+        {
+            "card_name": "Ingredient",
+            "card_quantity": 2,
+            "card_function": "Highest color +6."
+        },
+        {
+            "card_name": "Grind",
+            "card_quantity": 2,
+            "card_function": "Lowest color +3."
+        },
+        {
+            "card_name": "Enchant",
+            "card_quantity": 2,
+            "card_function": "Lowest color +8; random color -1 for each future card trigger."
+        },
+        {
+            "card_name": "Distill",
+            "card_quantity": 2,
+            "card_function": "Highest color x2."
+        }
     ]
 }

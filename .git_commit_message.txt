@@ -1,10 +1,9 @@
-chore: Project health check and state verification
+feat: Add alchemy crafting type and new item
 
-This commit encompasses a full health check of the project after a significant branch merge. It verifies, corrects, and documents the simulation's state management and card logic.
+This commit introduces the new "alchemy" crafting type to the simulator.
 
-Key changes include:
-- Conducted a manual, step-by-step execution of all application modes (general, single-item, and batch) to ensure stability.
-- Fixed a critical syntax error in `crafting/kitchen.py` that prevented the app from running.
-- Corrected the simulation's initial state in `simulator.py`, removing an unused variable and restoring a mistakenly deleted one.
-- Added `requirements.txt` to formalize project dependencies.
-- Created detailed analysis and documentation plans for the post-merge health check and the complete card/item logic.
+- Adds four new alchemy cards: Ingredient, Grind, Enchant, and Distill.
+- Implements new game mechanics for highest/lowest color targeting and a future-card debuff (`Enchant`).
+- Corrects the `Enchant` card logic to ensure it is affected by previously played debuffs, based on user-provided scenarios.
+- Adds the "Growth Serum" item for the alchemy crafting type.
+- Registers the new type and its components within the core application.

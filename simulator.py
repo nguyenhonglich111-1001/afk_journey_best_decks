@@ -66,7 +66,7 @@ class CardSimulator:
                 'yellow': 1, 'blue': 1, 'artisan_bonus': 0,
                 'forge_expert_bonus': 0, 'slow_cook_all_color_bonus': 0,
                 'charge_count': 0, 'first_forge_played': False,
-                'fe_played_count': 0, # New state for compounding bonus
+                'fe_played_count': 0, 'enchant_debuff': 0,
                 # Pass a reference to the persistent history into each run.
                 'prd_history': prd_history,
             }
