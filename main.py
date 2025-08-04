@@ -1,7 +1,9 @@
 # Standard library imports
 import argparse
 import json
+import os
 import sys
+from datetime import datetime
 from typing import Dict, Type
 
 # Local application imports
@@ -133,6 +135,11 @@ def main() -> None:
         type=str,
         help="The name of a special item to use for the simulation, or 'all' for batch mode."
     )
+    parser.add_argument(
+        "--save-report",
+        action="store_true",
+        help="Save the batch simulation report to a markdown file."
+    )
     args = parser.parse_args()
 
     # --- Data Loading ---
@@ -162,6 +169,15 @@ def main() -> None:
         discord_report = format_results_for_discord(all_results)
         print("\n\n--- Batch Simulation Report ---")
         print(discord_report)
+
+        if args.save_report:
+            output_dir = "output"
+            os.makedirs(output_dir, exist_ok=True)
+            timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            filepath = os.path.join(output_dir, f"report_{timestamp}.md")
+            with open(filepath, "w") as f:
+                f.write(discord_report)
+            print(f"\nReport saved to: {filepath}")
         return
 
     # --- Single Run Logic (Item or General) ---
