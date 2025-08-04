@@ -93,7 +93,7 @@ def main() -> None:
     # --- Workflow Selection ---
     active_buff_id = None
     star_thresholds = None
-    top_n_results = 5
+    top_n_results = 2
     deck_sizes_to_check = [3, 4, 5, 6]
 
     if args.item:

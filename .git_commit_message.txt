@@ -1,9 +1,11 @@
-feat: Add star-optimized deck analysis mode
+feat: Remove consistency simulation mode
 
-This commit introduces a new analysis mode for finding decks that are optimized to achieve the highest possible star-rating for a specific item.
+This commit removes the `--target-score` command-line argument and all associated logic for the "consistency" simulation mode.
 
-- The simulator can now accept a list of `star_thresholds` from `items.json`.
-- When these thresholds are present for an item, the simulation calculates the probability of reaching each star level (1-star, 2-star, 3-star, etc.).
-- A new sorting logic has been implemented to rank decks by the highest achievable star, using average score as a tie-breaker.
-- The command-line output has been updated to display a detailed breakdown of star-level probabilities for the top decks.
-- This new mode is triggered automatically when running an analysis for an item that contains the `star_thresholds` attribute, while maintaining full backward compatibility with the default (highest score) and consistency (`--target-score`) modes.
+The key changes include:
+- Deleting the `--target-score` argument from `main.py`.
+- Removing the `target_score` attribute and related calculations from `simulator.py`.
+- Simplifying the `evaluate_deck` and `find_best_decks` methods in `simulator.py` to only handle average score calculation and sorting.
+- Cleaning up the result printing logic in `main.py` to remove conditional formatting for the consistency mode.
+
+The application's default and only behavior (outside of special item modes) is now to find the decks with the highest average score.
