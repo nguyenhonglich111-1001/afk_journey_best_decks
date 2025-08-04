@@ -27,7 +27,8 @@ class CardSimulator:
         self,
         crafting_instance: BaseCrafting,
         active_buff_id: Optional[str] = None,
-        target_score: Optional[int] = None
+        target_score: Optional[int] = None,
+        star_thresholds: Optional[List[int]] = None
     ) -> None:
         """
         Initializes the simulator.
@@ -36,36 +37,33 @@ class CardSimulator:
             crafting_instance: An object that inherits from BaseCrafting.
             active_buff_id: The unique identifier for a special item buff.
             target_score: The score to check for consistency.
+            star_thresholds: A list of scores to check for star-level consistency.
         """
         self.crafting = crafting_instance
         self.card_functions = self.crafting.get_card_functions()
         self.active_buff_id = active_buff_id
         self.target_score = target_score
+        self.star_thresholds = star_thresholds
 
-    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> Dict[str, float]:
+    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> Dict[str, Any]:
         """
         Runs a Monte Carlo simulation for a given deck.
 
-        Returns a dictionary containing the average score and, if a target_score
-        is set, the consistency percentage.
+        Returns a dictionary containing the average score and other metrics based
+        on the simulation mode (star chances or single-target consistency).
         """
         total_score = 0.0
-        successful_runs = 0
+        successful_runs_target = 0
+        successful_runs_stars = [0] * len(self.star_thresholds) if self.star_thresholds else []
 
         for _ in range(simulations):
-            # Reset the state for each simulation run.
+            # Reset the state for each simulation run
             state: State = {
-                'yellow': 1,
-                'blue': 1,
-                'artisan_bonus': 0,
-                'forge_expert_bonus': 0,
-                'slow_cook_bonus_per_flip': 0,
-                'slow_cook_all_color_bonus': 0,
-                'charge_count': 0,
-                # State for special item buffs
+                'yellow': 1, 'blue': 1, 'artisan_bonus': 0,
+                'forge_expert_bonus': 0, 'slow_cook_bonus_per_flip': 0,
+                'slow_cook_all_color_bonus': 0, 'charge_count': 0,
                 'first_forge_played': False,
             }
-            # If a special item buff is active, add its flag to the state
             if self.active_buff_id:
                 state[self.active_buff_id] = True
 
@@ -79,13 +77,23 @@ class CardSimulator:
             final_score = state['yellow'] * state['blue']
             total_score += final_score
 
-            if self.target_score and final_score >= self.target_score:
-                successful_runs += 1
+            # Check against star thresholds or a single target score
+            if self.star_thresholds:
+                for i, threshold in enumerate(self.star_thresholds):
+                    if final_score >= threshold:
+                        successful_runs_stars[i] += 1
+            elif self.target_score and final_score >= self.target_score:
+                successful_runs_target += 1
 
         # Prepare results
         results = {'score': total_score / simulations}
-        if self.target_score:
-            results['consistency'] = (successful_runs / simulations) * 100
+        if self.star_thresholds:
+            results['star_chances'] = {
+                f"{i+1}_star": (count / simulations) * 100
+                for i, count in enumerate(successful_runs_stars)
+            }
+        elif self.target_score:
+            results['consistency'] = (successful_runs_target / simulations) * 100
         
         return results
 
@@ -118,16 +126,26 @@ class CardSimulator:
                 deck_info = {
                     'deck': Counter(deck),
                     'score': eval_results.get('score', 0),
-                    'consistency': eval_results.get('consistency', 0)
+                    'consistency': eval_results.get('consistency', 0),
+                    'star_chances': eval_results.get('star_chances', {})
                 }
                 deck_scores.append(deck_info)
 
             print("\nEvaluation complete.")
 
             # Sort based on the simulation mode
-            sort_key = 'consistency' if self.target_score else 'score'
-            deck_scores.sort(key=lambda x: x[sort_key], reverse=True)
+            if self.star_thresholds:
+                num_stars = len(self.star_thresholds)
+                deck_scores.sort(
+                    key=lambda x: tuple(x.get('star_chances', {}).get(f"{i}_star", 0) for i in range(num_stars, 0, -1)) + (x.get('score', 0),),
+                    reverse=True
+                )
+            else:
+                sort_key = 'consistency' if self.target_score else 'score'
+                deck_scores.sort(key=lambda x: x.get(sort_key, 0), reverse=True)
+            
             results[size] = deck_scores[:top_n]
 
         return results
+
 

@@ -95,60 +95,54 @@ def main() -> None:
 
     crafting_instance = CraftingClass(crafting_data)
     
-    # --- Workflow Selection (Normal vs. Special Item vs. Target Score) ---
+    # --- Workflow Selection --- 
     active_buff_id = None
-    top_n_results = 1 # Show more results by default
+    star_thresholds = None
+    top_n_results = 5
     deck_sizes_to_check = [3, 4, 5, 6]
 
-    # Initialize the simulator with the target score if provided
-    simulator = CardSimulator(
-        crafting_instance,
-        target_score=args.target_score
-    )
-
     if args.item:
-        # Special Item Workflow
         item = items_data.get(args.item)
         if not item:
             print(f"Error: Special item '{args.item}' not found in items.json.")
             return
         
-        print(f"\n--- Analyzing with Special Item: {args.item} ---")
-        print(f"    Buff: {item['description']}")
-        
+        active_buff_id = item.get('buff_id')
+        star_thresholds = item.get('star_thresholds')
         deck_sizes_to_check = [item['deck_size']]
-        active_buff_id = item['buff_id']
-        # Re-initialize the simulator with the buff
-        simulator = CardSimulator(
-            crafting_instance,
-            active_buff_id=active_buff_id,
-            target_score=args.target_score
-        )
+        
+        print(f"\n--- Analyzing for Item: {args.item} ---")
+        if star_thresholds:
+            print("    Mode: Star-Optimization Analysis")
+        else:
+            print("    Mode: Highest Average Score (Item-specific)")
+
     elif args.target_score:
-        # Target Score Workflow
         print(f"\n--- Analyzing for Target Score: {args.target_score} ---")
         print("    Mode: Finding most consistent decks.")
     else:
-        # Normal Workflow (Highest Average Score)
         print(f"\n--- Analyzing Crafting Type: {chosen_type_name} ---")
         print("    Mode: Finding highest average score decks.")
+
+    simulator = CardSimulator(
+        crafting_instance,
+        active_buff_id=active_buff_id,
+        target_score=args.target_score,
+        star_thresholds=star_thresholds
+    )
 
     # --- Simulation Execution ---
     best_decks = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
 
     # --- Results ---
     if best_decks:
-        # Determine the metric to display based on the simulation mode
-        if args.target_score:
+        # Determine the output format based on the simulation mode
+        if star_thresholds:
+            print(f"\n\n--- Top {top_n_results} Star-Optimized Decks for: {args.item} ---")
+        elif args.target_score:
             print(f"\n\n--- Top {top_n_results} Most Consistent Decks (Target: {args.target_score}) ---")
-            metric_key = 'consistency'
-            metric_label = 'Consistency'
-            metric_unit = '%'
         else:
             print(f"\n\n--- Top {top_n_results} Highest-Score Decks ---")
-            metric_key = 'score'
-            metric_label = 'Expected Score'
-            metric_unit = ''
 
         for size, decks in best_decks.items():
             print(f"\n--- Deck Size: {size} ---")
@@ -157,17 +151,25 @@ def main() -> None:
                 continue
             for i, result in enumerate(decks):
                 deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
-                main_metric_val = result[metric_key]
-                avg_score = result['score']
-                
-                # Format the output string
-                if args.target_score:
-                    print(f"  #{i+1}: {metric_label}: {main_metric_val:.2f}{metric_unit}")
-                    print(f"     Avg Score: {avg_score:.2f}")
-                else:
-                    print(f"  #{i+1}: {metric_label}: {avg_score:.2f}")
+                avg_score = result.get('score', 0)
 
-                print(f"     Deck: {deck_str}")
+                if star_thresholds:
+                    print(f"  #{i+1}: Avg Score: {avg_score:.2f}")
+                    star_chances = result.get('star_chances', {})
+                    for star_num in range(1, len(star_thresholds) + 1):
+                        star_key = f"{star_num}_star"
+                        chance = star_chances.get(star_key, 0)
+                        threshold = star_thresholds[star_num - 1]
+                        print(f"     {star_num}-Star ({threshold} pts): {chance:.2f}%")
+                    print(f"     Deck: {deck_str}")
+                elif args.target_score:
+                    consistency = result.get('consistency', 0)
+                    print(f"  #{i+1}: Consistency: {consistency:.2f}%")
+                    print(f"     Avg Score: {avg_score:.2f}")
+                    print(f"     Deck: {deck_str}")
+                else:
+                    print(f"  #{i+1}: Expected Score: {avg_score:.2f}")
+                    print(f"     Deck: {deck_str}")
 
 if __name__ == "__main__":
     main()
