@@ -4,12 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [2025-08-04]
 
-### Features
+### Features (from `company` branch merge)
+- **Batch Simulation Mode**: Implemented a new batch mode via `--item all` to analyze all items in a single run and generate a consolidated report.
+- **Save Report to File**: Added a `--save-report` flag to save the batch analysis to a timestamped markdown file.
+- **Star-Specific Deck Analysis**: For items with `star_thresholds`, the simulation now finds the single best deck for achieving each star level, rather than the top N decks overall.
+- **Item-Centric Workflow**: Refactored the application to derive the `crafting_type` from the item's data, making the `--item` flag the primary workflow.
+- **Removed Consistency Mode**: Removed the `--target-score` argument and all associated logic for the "consistency" simulation mode to streamline the application's focus.
+
+### Fixes (from `company` branch merge)
+- **Corrected `.gitignore`**: Added the `output/` directory to `.gitignore`.
+
+### Features (from `main` branch)
 - **Add Alchemy Crafting Type**: Introduced the new "alchemy" crafting type with four unique cards: `Ingredient`, `Grind`, `Enchant`, and `Distill`.
 - **Implement New Game Mechanics**: Added logic for highest/lowest color targeting and a future-card debuff system for the `Enchant` card.
 - **Add New Alchemy Item**: Added the "Growth Serum" item to `items.json`.
 
-### Fixes
+### Fixes (from `main` branch)
 - **Correct Enchant Card Logic**: Updated the `Enchant` card to be affected by its own debuff, ensuring simulation accuracy based on in-game scenarios.
 - **Fix Critical Syntax Error**: Resolved a syntax error in `crafting/kitchen.py` that was preventing the application from running.
 - **Correct Simulation State**: Removed an unused state variable (`slow_cook_bonus_per_flip`) and restored a missing one (`forge_expert_bonus`) in `simulator.py`.
