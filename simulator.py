@@ -4,9 +4,19 @@ import sys
 from collections import Counter
 from itertools import combinations
 from typing import List, Dict, Tuple, Set, Any, Optional
+import multiprocessing
+from tqdm import tqdm
 
 # Local application imports
 from crafting.base_crafting import BaseCrafting, State
+
+
+def evaluate_deck_wrapper(args):
+    """Helper function to allow instance methods to be used with multiprocessing."""
+    simulator_instance, deck = args
+    score = simulator_instance.evaluate_deck(deck)
+    return deck, score
+
 
 class CardSimulator:
     """
@@ -81,13 +91,13 @@ class CardSimulator:
             num_decks = len(unique_decks)
             print(f"Found {num_decks} unique decks to evaluate...")
 
-            for i, deck in enumerate(unique_decks):
-                score = self.evaluate_deck(deck)
-                deck_scores.append({'deck': Counter(deck), 'score': score})
+            tasks = [(self, deck) for deck in unique_decks]
 
-                progress = (i + 1) / num_decks
-                sys.stdout.write(f"\r  Progress: [{'#' * int(20 * progress):<20}] {i+1}/{num_decks}")
-                sys.stdout.flush()
+            with multiprocessing.Pool() as pool:
+                results_from_pool = list(tqdm(pool.imap_unordered(evaluate_deck_wrapper, tasks), total=num_decks, desc="Evaluating decks"))
+
+            for deck, score in results_from_pool:
+                deck_scores.append({'deck': Counter(deck), 'score': score})
 
             print("\nEvaluation complete.")
 
