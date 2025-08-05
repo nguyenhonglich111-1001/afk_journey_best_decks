@@ -3,6 +3,7 @@ import argparse
 import json
 import os
 import sys
+from collections import defaultdict
 from datetime import datetime
 from typing import Dict, Type
 
@@ -86,38 +87,40 @@ def run_simulation_for_item(item_name: str, item_data: dict, cards_data: dict) -
     }
 
 
-def format_results_for_discord(all_results: list) -> str:
-    """Formats a list of simulation results into a single Discord-friendly string."""
+def format_results_for_discord(grouped_results: Dict[str, list]) -> str:
+    """Formats a dictionary of grouped simulation results into a single Discord-friendly string."""
     report_parts = []
-    for result_data in all_results:
-        item_name = result_data.get('item_name', 'Unknown Item')
-        star_thresholds = result_data.get('star_thresholds')
-        simulation_results = result_data.get('results', {})
-        
-        report_parts.append(f"**Item: {item_name}**")
-        
-        if not star_thresholds:
-            report_parts.append("- No star thresholds defined.")
-            continue
-
-        # The results are nested under the deck size key
-        deck_size = list(simulation_results.keys())[0]
-        decks = simulation_results[deck_size]
-
-        for star_num in range(1, len(star_thresholds) + 1):
-            star_key = f"{star_num}_star"
-            result = decks.get(star_key)
-            if not result:
+    for crafting_type, results_list in grouped_results.items():
+        report_parts.append(f"## [+] Crafting Type: {crafting_type.title()}")
+        for result_data in results_list:
+            item_name = result_data.get('item_name', 'Unknown Item')
+            star_thresholds = result_data.get('star_thresholds')
+            simulation_results = result_data.get('results', {})
+            
+            report_parts.append(f"**Item: {item_name}")
+            
+            if not star_thresholds:
+                report_parts.append("- No star thresholds defined.")
                 continue
 
-            threshold = star_thresholds[star_num - 1]
-            chance = result.get('star_chances', {}).get(star_key, 0)
-            deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
-            
-            report_parts.append(
-                f"- **Best for {star_num}-Star ({threshold} pts):** {chance:.2f}% | Deck: {deck_str}"
-            )
-        report_parts.append("---")
+            # The results are nested under the deck size key
+            deck_size = list(simulation_results.keys())[0]
+            decks = simulation_results[deck_size]
+
+            for star_num in range(1, len(star_thresholds) + 1):
+                star_key = f"{star_num}_star"
+                result = decks.get(star_key)
+                if not result:
+                    continue
+
+                threshold = star_thresholds[star_num - 1]
+                chance = result.get('star_chances', {}).get(star_key, 0)
+                deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
+                
+                report_parts.append(
+                    f"- **Best for {star_num}-Star ({threshold} pts):** {chance:.2f}% | Deck: {deck_str}"
+                )
+            report_parts.append("---")
 
     return "\n".join(report_parts)
 
@@ -164,13 +167,23 @@ def main() -> None:
         print("--- Running simulations for all items. This may take a while... ---")
         all_results = []
         for item_name, item_data in items_data.items():
+            if args.crafting_type and item_data.get('crafting_type') != args.crafting_type:
+                continue
             # Only run for items that have star thresholds
             if 'star_thresholds' in item_data:
                 result = run_simulation_for_item(item_name, item_data, cards_data)
                 if result:
                     all_results.append(result)
         
-        discord_report = format_results_for_discord(all_results)
+        grouped_results = defaultdict(list)
+        for result in all_results:
+            # We need to fetch the crafting_type again for grouping
+            item_name = result.get('item_name')
+            crafting_type = items_data.get(item_name, {}).get('crafting_type')
+            if crafting_type:
+                grouped_results[crafting_type].append(result)
+        
+        discord_report = format_results_for_discord(grouped_results)
         print("\n\n--- Batch Simulation Report ---")
         print(discord_report)
 
@@ -240,39 +253,34 @@ def main() -> None:
         star_thresholds=star_thresholds
     )
     
-    best_decks = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
+    simulation_results = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
 
     # --- Results for Single Run ---
-    if best_decks:
+    if simulation_results:
         if star_thresholds:
-            print(f"\n\n--- Best Deck Per Star Level for: {item_name_for_display} ---")
+            # Create a structured result similar to the batch mode
+            single_item_result = {
+                'item_name': item_name_for_display,
+                'star_thresholds': star_thresholds,
+                'results': simulation_results
+            }
+            
+            # Group it for the formatter
+            grouped_results = defaultdict(list)
+            grouped_results[chosen_type_name].append(single_item_result)
+            
+            # Format and print
+            discord_report = format_results_for_discord(grouped_results)
+            print("\n\n--- Star-Optimized Analysis Report ---")
+            print(discord_report)
         else:
             print(f"\n\n--- Top {top_n_results} Highest-Score Decks for: {chosen_type_name} ---")
-
-        for size, decks in best_decks.items():
-            print(f"\n--- Deck Size: {size} ---")
-            if not decks:
-                print("  No results.")
-                continue
-
-            if star_thresholds:
-                for star_num in range(1, len(star_thresholds) + 1):
-                    star_key = f"{star_num}_star"
-                    result = decks.get(star_key)
-                    if not result:
-                        continue
-
-                    threshold = star_thresholds[star_num - 1]
-                    print(f"\n--- Best Deck for {star_num}-Star ({threshold} pts) ---")
-                    
-                    deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
-                    avg_score = result.get('score', 0)
-                    chance = result.get('star_chances', {}).get(star_key, 0)
-
-                    print(f"  Chance to reach {star_num}-Star: {chance:.2f}%")
-                    print(f"  Avg Score: {avg_score:.2f}")
-                    print(f"  Deck: {deck_str}")
-            else:
+            for size, decks in simulation_results.items():
+                print(f"\n--- Deck Size: {size} ---")
+                if not decks:
+                    print("  No results.")
+                    continue
+                
                 for i, result in enumerate(decks):
                     deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
                     avg_score = result.get('score', 0)
