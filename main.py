@@ -52,7 +52,7 @@ def print_usage_guide():
 
 
 def run_simulation_for_item(item_name: str, item_data: dict, cards_data: dict) -> dict:
-    """Runs a full simulation for a single item and returns the results."""
+    """Runs a full simulation for a single item and returns a structured result."""
     chosen_type_name = item_data.get('crafting_type')
     if not chosen_type_name:
         print(f"Warning: Item '{item_name}' is missing 'crafting_type'. Skipping.")
@@ -76,13 +76,14 @@ def run_simulation_for_item(item_name: str, item_data: dict, cards_data: dict) -
     )
     
     deck_sizes_to_check = [item_data['deck_size']]
-    best_decks = simulator.find_best_decks(deck_sizes_to_check)
+    simulation_results = simulator.find_best_decks(deck_sizes_to_check)
     
-    # Attach metadata to the results for the final report
-    best_decks['item_name'] = item_name
-    best_decks['star_thresholds'] = item_data.get('star_thresholds')
-    
-    return best_decks
+    # Create a new dictionary to hold metadata and results separately
+    return {
+        'item_name': item_name,
+        'star_thresholds': item_data.get('star_thresholds'),
+        'results': simulation_results
+    }
 
 
 def format_results_for_discord(all_results: list) -> str:
@@ -91,6 +92,7 @@ def format_results_for_discord(all_results: list) -> str:
     for result_data in all_results:
         item_name = result_data.get('item_name', 'Unknown Item')
         star_thresholds = result_data.get('star_thresholds')
+        simulation_results = result_data.get('results', {})
         
         report_parts.append(f"**Item: {item_name}**")
         
@@ -99,8 +101,8 @@ def format_results_for_discord(all_results: list) -> str:
             continue
 
         # The results are nested under the deck size key
-        deck_size = list(result_data.keys())[0]
-        decks = result_data[deck_size]
+        deck_size = list(simulation_results.keys())[0]
+        decks = simulation_results[deck_size]
 
         for star_num in range(1, len(star_thresholds) + 1):
             star_key = f"{star_num}_star"
