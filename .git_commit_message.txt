@@ -1,9 +1,10 @@
-feat: Add alchemy crafting type and new item
+feat(reports): Implement grouped and filtered batch reports
 
-This commit introduces the new "alchemy" crafting type to the simulator.
+This commit introduces a major enhancement to the reporting capabilities of the simulator, allowing for more organized and targeted analysis.
 
-- Adds four new alchemy cards: Ingredient, Grind, Enchant, and Distill.
-- Implements new game mechanics for highest/lowest color targeting and a future-card debuff (`Enchant`).
-- Corrects the `Enchant` card logic to ensure it is affected by previously played debuffs, based on user-provided scenarios.
-- Adds the "Growth Serum" item for the alchemy crafting type.
-- Registers the new type and its components within the core application.
+Key changes:
+- Added a `--crafting_type` filter to the `--item all` batch mode, enabling users to run simulations for a specific crafting category.
+- Implemented result grouping by `crafting_type` in batch mode, providing a more structured and readable report.
+- Updated the Discord-friendly output formatter to display the new grouped format, with clear headers for each crafting type.
+- Unified the single-item analysis to use the same grouped report format, ensuring a consistent user experience across all analysis modes.
+- Replaced unicode emoji with text-based markers for better compatibility with different terminals.

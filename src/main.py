@@ -14,6 +14,12 @@ from crafting.kitchen import KitchenCrafting
 from crafting.alchemy import AlchemyCrafting
 from simulator import CardSimulator
 
+# --- Path Setup ---
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(SCRIPT_DIR, '..', 'data')
+CARDS_PATH = os.path.join(DATA_DIR, 'cards.json')
+ITEMS_PATH = os.path.join(DATA_DIR, 'items.json')
+
 # This dictionary maps the string name of a crafting type to its class.
 CRAFTING_TYPE_CLASSES: Dict[str, Type[BaseCrafting]] = {
     "kitchen": KitchenCrafting,
@@ -37,7 +43,7 @@ def print_usage_guide():
         
     # Print available special items
     try:
-        with open('items.json', 'r') as f:
+        with open(ITEMS_PATH, 'r') as f:
             items_data = json.load(f)
         if items_data:
             print("\nAvailable Special Items:")
@@ -151,9 +157,9 @@ def main() -> None:
 
     # --- Data Loading ---
     try:
-        with open('cards.json', 'r') as f:
+        with open(CARDS_PATH, 'r') as f:
             cards_data = json.load(f)
-        with open('items.json', 'r') as f:
+        with open(ITEMS_PATH, 'r') as f:
             items_data = json.load(f)
     except FileNotFoundError as e:
         print(f"Error: Data file not found - {e.filename}")
