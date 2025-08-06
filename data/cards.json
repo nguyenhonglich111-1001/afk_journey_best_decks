@@ -31,7 +31,7 @@
         {
             "card_name": "Forge Expert",
             "card_function": "Random color +3. All future Forge Expert cards gain +3",
-            "card_quantity": 3,
+            "card_quantity": 4,
             "attribute": "Artisan"
         },
         {
@@ -59,12 +59,12 @@
     "alchemy": [
         {
             "card_name": "Ingredient",
-            "card_quantity": 2,
+            "card_quantity": 3,
             "card_function": "Highest color +6."
         },
         {
             "card_name": "Grind",
-            "card_quantity": 2,
+            "card_quantity": 3,
             "card_function": "Lowest color +3."
         },
         {
@@ -74,7 +74,7 @@
         },
         {
             "card_name": "Distill",
-            "card_quantity": 2,
+            "card_quantity": 1,
             "card_function": "Highest color x2."
         }
     ]

@@ -30,6 +30,11 @@
         "deck_size": 5,
         "star_thresholds": [46, 86]
     },
+    "Chillguard Armor": {
+        "crafting_type": "forging",
+        "deck_size": 6,
+        "star_thresholds": [762,873,974,1190]
+    },
     "Spice Bread": {
         "crafting_type": "kitchen",
         "deck_size": 5,
@@ -45,10 +50,28 @@
         "deck_size": 6,
         "star_thresholds": [1070, 1270, 1420, 1740]
     },
+    "Salted Dry Fruit": {
+        "crafting_type": "kitchen",
+        "deck_size": 5,
+        "description": "A salty and dry fruit.",
+        "star_thresholds": [1040, 1230, 1350, 1640]
+    },
+    "Spice Dry Fruit": {
+        "crafting_type": "kitchen",
+        "deck_size": 7,
+        "description": "A spicy and dry fruit.",
+        "star_thresholds": [2670, 2950, 3340, 4020]
+    },
     "Growth Serum": {
         "crafting_type": "alchemy",
         "deck_size": 3,
         "description": "A basic alchemy item.",
         "star_thresholds": [12, 27]
+    },
+    "Calming Bouquet": {
+        "crafting_type": "alchemy",
+        "deck_size": 6,
+        "description": "A calming bouquet of flowers.",
+        "star_thresholds": [518, 575, 637, 744]
     }
 }
