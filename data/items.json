@@ -77,12 +77,14 @@
     "Warmdust-Deck": {
         "crafting_type": "alchemy",
         "deck_size": 7,
+        "buff_id": "warmdust_deck_buff",
         "description": "Special buff lowest color +1 for each card triggered",
         "star_thresholds": [1510, 1630, 1760, 2040]
     },
     "Calming Warmdust-deck": {
         "crafting_type": "alchemy",
         "deck_size": 7,
+        "buff_id": "calming_warmdust_deck_buff",
         "description": "Special buff Highest color +3 for each card triggered.",
         "star_thresholds": [2150, 2350, 2520, 2860]
     }
