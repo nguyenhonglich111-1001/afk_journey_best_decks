@@ -73,5 +73,17 @@
         "deck_size": 6,
         "description": "A calming bouquet of flowers.",
         "star_thresholds": [518, 575, 637, 744]
+    },
+    "Warmdust-Deck": {
+        "crafting_type": "alchemy",
+        "deck_size": 7,
+        "description": "Special buff lowest color +1 for each card triggered",
+        "star_thresholds": [1510, 1630, 1760, 2040]
+    },
+    "Calming Warmdust-deck": {
+        "crafting_type": "alchemy",
+        "deck_size": 7,
+        "description": "Special buff Highest color +3 for each card triggered.",
+        "star_thresholds": [2150, 2350, 2520, 2860]
     }
 }

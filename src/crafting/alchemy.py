@@ -21,6 +21,18 @@ class AlchemyCrafting(BaseCrafting):
             color = self._get_random_color()
             state[color] = max(1, state[color] - 1) # Ensure score doesn't go below 1
 
+    def _apply_warmdust_deck_buff(self, state: State):
+        """Applies the buff for the Warmdust-Deck item."""
+        if "warmdust_deck_buff" in state.get("buffs", []):
+            lowest_color = self._get_lowest_color(state)
+            state[lowest_color] += 1
+
+    def _apply_calming_warmdust_deck_buff(self, state: State):
+        """Applies the buff for the Calming Warmdust-deck item."""
+        if "calming_warmdust_deck_buff" in state.get("buffs", []):
+            highest_color = self._get_highest_color(state)
+            state[highest_color] += 3
+
     def get_card_functions(self) -> Dict[str, Callable[[State], State]]:
         """Maps alchemy card names to their specific functions."""
         return {
@@ -35,6 +47,8 @@ class AlchemyCrafting(BaseCrafting):
     def ingredient(self, state: State) -> State:
         """Highest color +6."""
         self._apply_enchant_debuff(state)
+        self._apply_warmdust_deck_buff(state)
+        self._apply_calming_warmdust_deck_buff(state)
         highest_color = self._get_highest_color(state)
         state[highest_color] += 6
         return state
@@ -42,6 +56,8 @@ class AlchemyCrafting(BaseCrafting):
     def grind(self, state: State) -> State:
         """Lowest color +3."""
         self._apply_enchant_debuff(state)
+        self._apply_warmdust_deck_buff(state)
+        self._apply_calming_warmdust_deck_buff(state)
         lowest_color = self._get_lowest_color(state)
         state[lowest_color] += 3
         return state
@@ -50,6 +66,8 @@ class AlchemyCrafting(BaseCrafting):
         """Lowest color +8; increments future card debuff."""
         # Apply debuff from any previously played Enchant cards first.
         self._apply_enchant_debuff(state)
+        self._apply_warmdust_deck_buff(state)
+        self._apply_calming_warmdust_deck_buff(state)
         # Now, apply this card's effect.
         lowest_color = self._get_lowest_color(state)
         state[lowest_color] += 8
@@ -59,6 +77,8 @@ class AlchemyCrafting(BaseCrafting):
     def distill(self, state: State) -> State:
         """Highest color x2."""
         self._apply_enchant_debuff(state)
+        self._apply_warmdust_deck_buff(state)
+        self._apply_calming_warmdust_deck_buff(state)
         highest_color = self._get_highest_color(state)
         state[highest_color] *= 2
         return state
