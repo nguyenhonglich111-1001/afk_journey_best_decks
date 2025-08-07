@@ -23,13 +23,13 @@ class AlchemyCrafting(BaseCrafting):
 
     def _apply_warmdust_deck_buff(self, state: State):
         """Applies the buff for the Warmdust-Deck item."""
-        if "warmdust_deck_buff" in state.get("buffs", []):
+        if state.get("warmdust_deck_buff", False):
             lowest_color = self._get_lowest_color(state)
             state[lowest_color] += 1
 
     def _apply_calming_warmdust_deck_buff(self, state: State):
         """Applies the buff for the Calming Warmdust-deck item."""
-        if "calming_warmdust_deck_buff" in state.get("buffs", []):
+        if state.get("calming_warmdust_deck_buff", False):
             highest_color = self._get_highest_color(state)
             state[highest_color] += 3
 
