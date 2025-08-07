@@ -1,0 +1,50 @@
+Name: Ferment
+Desc: Guaranteed to trigger on the first flip of all future Heat Control Cards.
+Have: 2
+And I think if we flip 2 ferment. So that mean 1st and 2nd flip of all future HC is guarantee also
+
+and below is some scenarios I play i the game
+
+
+yellow(y) blue(b)
+
+Heat Control HC
+Ferment F
+
+HC 7X1
+F
+HC 10X4
+HC 10X10
+F
+
+HC
+HC 1X10
+F
+F
+HC 1X16 (I THINK BCS 2 F SO IT FLIP 2 TIME)
+
+HC
+HC 10X13
+F
+F
+HC 16X16
+HC 22X16
+
+HC
+HC
+HC 7X16
+F
+F 7X22
+
+HC 7X7
+F
+HC 13X7
+HC 16X13
+F
+HC 19X16
+
+
+
+
+
+

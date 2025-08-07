@@ -18,15 +18,27 @@ class KitchenCrafting(BaseCrafting):
             "Cut": self.cut,
             "Season": self.season,
             "Slow Cook": self.slow_cook,
+            "Ferment": self.ferment,
         }
 
     # --- Card Function Implementations ---
 
+    def ferment(self, state: State) -> State:
+        """
+        Increments the permanent guaranteed flip level for all future Heat
+        Control cards.
+        """
+        state['hc_guaranteed_flips_level'] = state.get('hc_guaranteed_flips_level', 0) + 1
+        return state
+
     def heat_control(self, state: State) -> State:
         """
-        Random color +3. Each flip also gets a bonus to both colors from any
-        previously played Slow Cook cards. Re-triggers based on a self-correcting
-        PRD system defined in cards.json.
+        Triggers a number of guaranteed flips based on the `hc_guaranteed_flips_level`
+        set by Ferment cards. Each flip adds +3 to a random color and gets a
+        bonus from Slow Cook.
+        
+        After guaranteed flips, it may re-trigger additional random flips based
+        on a self-correcting PRD system.
         """
         # --- 1. Get PRD Parameters and Persistent History ---
         card_def = next((c for c in self._card_definitions if c['card_name'] == 'Heat Control'), {})
@@ -48,14 +60,13 @@ class KitchenCrafting(BaseCrafting):
             deviation = current_average - target_average
             adjusted_chance = base_chance - (deviation * correction_factor)
         else:
-            # For the very first play, use the base chance.
             adjusted_chance = base_chance
             
-        # Clamp the chance to a reasonable range (e.g., 5% to 95%)
         adjusted_chance = max(0.05, min(0.95, adjusted_chance))
 
         # --- 3. Execute the Card's Core Logic ---
         all_color_bonus = state.get('slow_cook_all_color_bonus', 0)
+        successes_this_card = 0
 
         def _trigger_flip():
             """Applies the bonus to both colors and the base effect to one."""
@@ -64,20 +75,21 @@ class KitchenCrafting(BaseCrafting):
             color = self._get_random_color()
             state[color] += 3
 
-        # Initial trigger always happens
-        _trigger_flip()
-        
-        # Re-trigger loop using the adjusted chance
-        successes_this_card = 0
+        # --- 4. Perform Guaranteed Flips from Ferment Buff ---
+        guaranteed_flips_level = state.get('hc_guaranteed_flips_level', 0)
+        for _ in range(guaranteed_flips_level):
+            _trigger_flip()
+            successes_this_card += 1
+
+        # --- 5. Perform Additional Random Flips via PRD ---
         for _ in range(max_attempts):
             if random.random() < adjusted_chance:
                 successes_this_card += 1
                 _trigger_flip()
             else:
-                # The chain is broken on the first failure.
                 break
         
-        # --- 4. Update the Persistent History ---
+        # --- 6. Update the Persistent History ---
         prd_history['hc_plays'] = current_plays + 1
         prd_history['hc_successes'] = current_successes + successes_this_card
         
@@ -87,16 +99,12 @@ class KitchenCrafting(BaseCrafting):
         """
         Adds a bonus to a random color based on the 'Cut' card's defined
         value_range in cards.json.
-        - If the 'Salted Raisin' buff is active, this will always be the
-          maximum value from the range.
         """
-        # Find the card's definition to get its value_range
         card_def = next(
             (card for card in self._card_definitions if card['card_name'] == 'Cut'),
             None
         )
         
-        # Default to a safe range if the card isn't defined for some reason
         min_val, max_val = (4, 8)
         if card_def and 'value_range' in card_def:
             min_val, max_val = card_def['value_range']
@@ -114,12 +122,6 @@ class KitchenCrafting(BaseCrafting):
     def season(self, state: State) -> State:
         """
         Multiplies a random color by 2.
-
-        Args:
-            state: The current simulation state.
-
-        Returns:
-            The modified simulation state.
         """
         color = self._get_random_color()
         state[color] *= 2
