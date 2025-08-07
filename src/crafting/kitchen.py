@@ -73,7 +73,7 @@ class KitchenCrafting(BaseCrafting):
             state['yellow'] += all_color_bonus
             state['blue'] += all_color_bonus
             color = self._get_random_color()
-            state[color] += 3
+            state[color] += 4  # Base effect of +4 to a random color
 
         # --- 4. Perform Base and Guaranteed Flips ---
         # Heat Control always gets one base flip.
