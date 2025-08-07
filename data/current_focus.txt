@@ -1,0 +1,11 @@
+Kitchen
+HC => Copper Stewpot => 50 Emberleaf
+Cut => Chillguard Armor => Fire Essence
+
+Forging
+FE => Calming Boutqet => 100 Misoetoe
+Heat Up => Fire Essence
+
+Alchemy
+Grind => Salted Raisin => 100 Grape
+Enchant => Calming Warmdust => 200 Misoetoe + Fire Essences
