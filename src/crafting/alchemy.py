@@ -56,12 +56,15 @@ class AlchemyCrafting(BaseCrafting):
         return state
 
     def grind(self, state: State) -> State:
-        """Lowest color +3."""
+        """Lowest color +4. Highest color -2"""
         self._apply_enchant_debuff(state)
         self._apply_warmdust_deck_buff(state)
         self._apply_calming_warmdust_deck_buff(state)
+        highest_color = self._get_highest_color(state)
         lowest_color = self._get_lowest_color(state)
-        state[lowest_color] += 3
+        state[lowest_color] += 4
+        state[highest_color] = max(1, state[highest_color] - 2)
+
         return state
 
     def enchant(self, state: State) -> State:

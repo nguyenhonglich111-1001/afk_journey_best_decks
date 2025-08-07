@@ -70,7 +70,7 @@
         {
             "card_name": "Grind",
             "card_quantity": 3,
-            "card_function": "Lowest color +3."
+            "card_function": "Lowest color +4. Highest color -2."
         },
         {
             "card_name": "Enchant",

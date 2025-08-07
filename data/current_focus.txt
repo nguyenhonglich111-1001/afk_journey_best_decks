@@ -7,5 +7,16 @@ FE => Calming Boutqet >=2 stars=> 100 Misoetoe
 Heat Up => Fire Essence
 
 Alchemy
-Grind => Salted Raisin >= 1star=> 100 Grape
+Grind => Warmdust >=2star=> Fire Essences
 Enchant => Calming Warmdust >=2star => 200 Misoetoe + Fire Essences
+
+🔺 Top Priority (Craft regularly)
+Copper Stewpot (HC card)
+Chillguard Armor (Cut card)
+
+🔸 Medium Priority (Craft with caution)
+Salted Raisin (Grind card) – may need retries
+Calming Bouquet (FE card) – not worth crafting now
+
+🔻 Low Priority (Avoid unless needed)
+Ignore Calming Warmdust 
