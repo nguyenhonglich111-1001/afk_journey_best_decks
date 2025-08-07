@@ -25,10 +25,10 @@ class KitchenCrafting(BaseCrafting):
 
     def ferment(self, state: State) -> State:
         """
-        Increments the permanent guaranteed flip level for all future Heat
-        Control cards.
+        Activates the permanent Ferment buff, which guarantees an additional
+        flip for all future Heat Control cards. Does not stack.
         """
-        state['hc_guaranteed_flips_level'] = state.get('hc_guaranteed_flips_level', 0) + 1
+        state['ferment_buff_active'] = True
         return state
 
     def heat_control(self, state: State) -> State:
@@ -75,15 +75,18 @@ class KitchenCrafting(BaseCrafting):
             color = self._get_random_color()
             state[color] += 3
 
-        # --- 4. Perform Guaranteed Flips from Ferment Buff ---
-        guaranteed_flips_level = state.get('hc_guaranteed_flips_level', 0)
-        for _ in range(guaranteed_flips_level):
+        # --- 4. Perform Base and Guaranteed Flips ---
+        # Heat Control always gets one base flip.
+        _trigger_flip()
+        successes_this_card += 1
+
+        # It gets a second, guaranteed flip if the Ferment buff is active.
+        if state.get('ferment_buff_active', False):
             _trigger_flip()
-            successes_this_card += 1
 
         # --- 5. Perform Additional Random Flips via PRD ---
         for _ in range(max_attempts):
-            if random.random() < adjusted_chance:
+            if random.random() < 0.45:
                 successes_this_card += 1
                 _trigger_flip()
             else:
