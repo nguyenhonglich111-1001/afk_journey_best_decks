@@ -65,7 +65,7 @@
         {
             "card_name": "Ingredient",
             "card_quantity": 3,
-            "card_function": "Highest color +6."
+            "card_function": "Highest color +10. lowest color -2."
         },
         {
             "card_name": "Grind",

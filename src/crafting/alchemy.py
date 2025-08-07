@@ -45,12 +45,14 @@ class AlchemyCrafting(BaseCrafting):
     # --- Card Function Implementations ---
 
     def ingredient(self, state: State) -> State:
-        """Highest color +6."""
+        """Highest color +10. Lowest color -2."""
         self._apply_enchant_debuff(state)
         self._apply_warmdust_deck_buff(state)
         self._apply_calming_warmdust_deck_buff(state)
         highest_color = self._get_highest_color(state)
-        state[highest_color] += 6
+        lowest_color = self._get_lowest_color(state)
+        state[highest_color] += 10
+        state[lowest_color] = max(1, state[lowest_color] - 2)
         return state
 
     def grind(self, state: State) -> State:
