@@ -1,11 +1,11 @@
 Kitchen
-HC => Copper Stewpot => 50 Emberleaf
-Cut => Chillguard Armor => Fire Essence
+HC => Copper Stewpot >=2 stars=> 50 Emberleaf
+Cut => Chillguard Armor >=2 stars=> Fire Essence
 
 Forging
-FE => Calming Boutqet => 100 Misoetoe
+FE => Calming Boutqet >=2 stars=> 100 Misoetoe
 Heat Up => Fire Essence
 
 Alchemy
-Grind => Salted Raisin => 100 Grape
-Enchant => Calming Warmdust => 200 Misoetoe + Fire Essences
+Grind => Salted Raisin >= 1star=> 100 Grape
+Enchant => Calming Warmdust >=2star => 200 Misoetoe + Fire Essences
