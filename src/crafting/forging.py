@@ -52,7 +52,7 @@ class ForgingCrafting(BaseCrafting):
             
             # CRUCIAL: The bonus pool is only updated by a card's base trigger.
             if is_base_trigger:
-                state['forge_expert_bonus'] += (3 * fe_played_count)
+                state['forge_expert_bonus'] += (4 * fe_played_count)
 
         # --- Main Execution ---
         # The first trigger is always a base trigger.
