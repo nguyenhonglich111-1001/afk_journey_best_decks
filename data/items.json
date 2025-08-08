@@ -18,11 +18,6 @@
         "deck_size": 5,
         "star_thresholds": [108, 130, 163]
     },
-    "Fine Carver": {
-        "crafting_type": "forging",
-        "deck_size": 5,
-        "star_thresholds": [46, 86]
-    },
     "Chillguard Armor": {
         "crafting_type": "forging",
         "deck_size": 6,
