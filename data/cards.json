@@ -36,7 +36,7 @@
     "forging": [
         {
             "card_name": "Forge Expert",
-            "card_function": "Random color +3. All future Forge Expert cards gain +3",
+            "card_function": "Random color +4. All future Forge Expert cards gain +3",
             "card_quantity": 4,
             "attribute": "Artisan"
         },
@@ -70,7 +70,7 @@
         },
         {
             "card_name": "Grind",
-            "card_quantity": 3,
+            "card_quantity": 4,
             "card_function": "Lowest color +4. Highest color -2."
         },
         {

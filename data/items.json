@@ -13,13 +13,6 @@
         "description": "30% chance to trigger Forge Expert 1 extra time.",
         "star_thresholds": [566, 675, 797, 1040]
     },
-    "Salted Raisin": {
-        "crafting_type": "kitchen",
-        "deck_size": 4,
-        "buff_id": "salted_raisin_buff",
-        "description": "Cutting always yields the highest points (8).",
-        "star_thresholds": [344, 440, 462, 647]
-    },
     "Wodden Arrow": {
         "crafting_type": "forging",
         "deck_size": 5,
@@ -33,22 +26,24 @@
     "Chillguard Armor": {
         "crafting_type": "forging",
         "deck_size": 6,
-        "star_thresholds": [762,873,974,1190]
+        "star_thresholds": [762, 873, 974, 1190]
     },
-    "Spice Bread": {
-        "crafting_type": "kitchen",
-        "deck_size": 5,
-        "star_thresholds": [372, 448, 635]
-    },
-    "Toast": {
-        "crafting_type": "kitchen",
-        "deck_size": 5,
-        "star_thresholds": [102, 159]
+    "Stone Armor": {
+        "crafting_type": "forging",
+        "deck_size": 7,
+        "star_thresholds": [2210, 2600, 2920, 3770]
     },
     "Grape Vinegar": {
         "crafting_type": "kitchen",
         "deck_size": 6,
         "star_thresholds": [1070, 1270, 1420, 1740]
+    },
+    "Salted Raisin": {
+        "crafting_type": "kitchen",
+        "deck_size": 4,
+        "buff_id": "salted_raisin_buff",
+        "description": "Cutting always yields the highest points (8).",
+        "star_thresholds": [344, 440, 462, 647]
     },
     "Salted Dry Fruit": {
         "crafting_type": "kitchen",
@@ -62,11 +57,11 @@
         "description": "A spicy and dry fruit.",
         "star_thresholds": [2670, 2950, 3340, 4020]
     },
-    "Growth Serum": {
-        "crafting_type": "alchemy",
-        "deck_size": 3,
-        "description": "A basic alchemy item.",
-        "star_thresholds": [12, 27]
+    "Shroom Stir Fry": {
+        "crafting_type": "kitchen",
+        "deck_size": 6,
+        "description": "A spicy and dry fruit.",
+        "star_thresholds": [2160, 2450, 2810, 3520]
     },
     "Calming Bouquet": {
         "crafting_type": "alchemy",
