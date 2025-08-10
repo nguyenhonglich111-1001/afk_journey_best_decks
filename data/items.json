@@ -4,78 +4,97 @@
         "deck_size": 4,
         "buff_id": "carve_box_buff",
         "description": "The first Forge card affects all colors.",
-        "star_thresholds": [152, 180, 182, 190]
+        "star_thresholds": [152, 180, 182, 190],
+        "wish_points": [280,350,385,438,543],
+        "stamina_cost": 10
     },
     "Copper Stewpot": {
         "crafting_type": "forging",
         "deck_size": 5,
         "buff_id": "copper_stewpot_buff",
         "description": "30% chance to trigger Forge Expert 1 extra time.",
-        "star_thresholds": [566, 675, 797, 1040]
-    },
-    "Wodden Arrow": {
-        "crafting_type": "forging",
-        "deck_size": 5,
-        "star_thresholds": [108, 130, 163]
+        "star_thresholds": [566, 675, 797, 1040],
+        "wish_points": [280, 350, 385, 438, 543],
+        "stamina_cost": 10
     },
     "Chillguard Armor": {
         "crafting_type": "forging",
         "deck_size": 6,
-        "star_thresholds": [762, 873, 974, 1190]
+        "star_thresholds": [762, 873, 974, 1190],
+        "wish_points": [384, 480, 528, 600, 744],
+        "stamina_cost": 12
     },
     "Stone Armor": {
         "crafting_type": "forging",
         "deck_size": 7,
-        "star_thresholds": [2210, 2600, 2920, 3770]
+        "star_thresholds": [2210, 2600, 2920, 3770],
+        "wish_points": [515, 644, 708, 805, 998],
+        "stamina_cost": 14
     },
     "Grape Vinegar": {
         "crafting_type": "kitchen",
         "deck_size": 6,
-        "star_thresholds": [1070, 1270, 1420, 1740]
+        "star_thresholds": [1070, 1270, 1420, 1740],
+        "wish_points": [280, 350, 385, 438, 543],
+        "stamina_cost": 10
     },
     "Salted Raisin": {
         "crafting_type": "kitchen",
         "deck_size": 4,
         "buff_id": "salted_raisin_buff",
         "description": "Cutting always yields the highest points (8).",
-        "star_thresholds": [344, 440, 462, 647]
+        "star_thresholds": [344, 440, 462, 647],
+        "wish_points": [280, 350, 385, 438, 543],
+        "stamina_cost": 10
     },
     "Salted Dry Fruit": {
         "crafting_type": "kitchen",
         "deck_size": 5,
         "description": "A salty and dry fruit.",
-        "star_thresholds": [1040, 1230, 1350, 1640]
+        "star_thresholds": [1040, 1230, 1350, 1640],
+        "wish_points": [384, 480, 528, 600, 744],
+        "stamina_cost": 12
     },
     "Spice Dry Fruit": {
         "crafting_type": "kitchen",
         "deck_size": 7,
         "description": "A spicy and dry fruit.",
-        "star_thresholds": [2670, 2950, 3340, 4020]
+        "star_thresholds": [2670, 2950, 3340, 4020],
+        "wish_points": [384, 480, 528, 600, 744],
+        "stamina_cost": 12
     },
     "Shroom Stir Fry": {
         "crafting_type": "kitchen",
         "deck_size": 6,
         "description": "A spicy and dry fruit.",
-        "star_thresholds": [2160, 2450, 2810, 3520]
+        "star_thresholds": [2160, 2450, 2810, 3520],
+        "wish_points": [515,644,708,805,998],
+        "stamina_cost": 14
     },
     "Calming Bouquet": {
         "crafting_type": "alchemy",
         "deck_size": 6,
         "description": "A calming bouquet of flowers.",
-        "star_thresholds": [518, 575, 637, 744]
+        "star_thresholds": [518, 575, 637, 744],
+        "wish_points": [384, 480, 528, 600, 744],
+        "stamina_cost": 12
     },
     "Warmdust": {
         "crafting_type": "alchemy",
         "deck_size": 7,
         "buff_id": "warmdust_deck_buff",
         "description": "Special buff lowest color +1 for each card triggered",
-        "star_thresholds": [1510, 1630, 1760, 2040]
+        "star_thresholds": [1510, 1630, 1760, 2040],
+        "wish_points": [515, 644, 708, 805, 998],
+        "stamina_cost": 14
     },
     "Calming Warmdust": {
         "crafting_type": "alchemy",
         "deck_size": 7,
         "buff_id": "calming_warmdust_deck_buff",
         "description": "Special buff Highest color +3 for each card triggered.",
-        "star_thresholds": [2150, 2350, 2520, 2860]
+        "star_thresholds": [2150, 2350, 2520, 2860],
+        "wish_points": [515, 644, 708, 805, 998],
+        "stamina_cost": 14
     }
 }

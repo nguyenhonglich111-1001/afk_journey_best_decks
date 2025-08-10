@@ -1,10 +1,11 @@
 Kitchen
-HC => Copper Stewpot >=2 stars=> 50 Emberleaf
-Cut => Chillguard Armor >=2 stars=> Fire Essence
+HC => Shroom Stir Fry >=2 stars 0/8 => 100 Shroom + 10 Fire Essence
+Cut => Chillguard Armor >=2 stars 0/8 => 10 Fire Essence
 
 Forging
-FE => Calming Boutqet >=2 stars=> 100 Misoetoe
-Heat Up => Fire Essence
+FE => Calming Boutqet >=2 stars 6/8 => 100 Misoetoe
+Heat Up => Fire Essence 750/2400
+Charge => Arcanite 275/20000    
 
 Alchemy
 Grind => Warmdust >=2star=> Fire Essences
