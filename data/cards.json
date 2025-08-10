@@ -13,9 +13,9 @@
         },
         {
             "card_name": "Cut",
-            "card_function": "Adds a random number from 4 to 8 to a random color.",
+            "card_function": "Adds a random number from 8 to 12 to a random color.",
             "card_quantity": 3,
-            "value_range": [4, 8]
+            "value_range": [8, 12]
         },
         {
             "card_name": "Season",
