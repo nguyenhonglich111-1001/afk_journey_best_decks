@@ -58,7 +58,7 @@ def print_usage_guide():
     print("Example (General): python main.py forging")
 
 
-def run_simulation_for_item(item_name: str, item_data: dict, cards_data: dict) -> dict:
+def run_simulation_for_item(item_name: str, item_data: dict, cards_data: dict, report_type: str = "stars") -> dict:
     """Runs a full simulation for a single item and returns a structured result."""
     chosen_type_name = item_data.get('crafting_type')
     if not chosen_type_name:
@@ -79,55 +79,83 @@ def run_simulation_for_item(item_name: str, item_data: dict, cards_data: dict) -
     simulator = CardSimulator(
         crafting_instance,
         active_buff_id=item_data.get('buff_id'),
-        star_thresholds=item_data.get('star_thresholds')
+        star_thresholds=item_data.get('star_thresholds'),
+        wish_points=item_data.get('wish_points'),
+        stamina_cost=item_data.get('stamina_cost')
     )
     
     deck_sizes_to_check = [item_data['deck_size']]
-    simulation_results = simulator.find_best_decks(deck_sizes_to_check)
+    simulation_results = simulator.find_best_decks(deck_sizes_to_check, report_type=report_type)
     
     # Create a new dictionary to hold metadata and results separately
     return {
         'item_name': item_name,
         'star_thresholds': item_data.get('star_thresholds'),
-        'results': simulation_results
+        'stamina_cost': item_data.get('stamina_cost'),
+        'results': simulation_results,
+        'deck_size': item_data['deck_size']
     }
 
 
-def format_results_for_discord(grouped_results: Dict[str, list]) -> str:
+def format_stars_report(grouped_results: Dict[str, list]) -> str:
     """Formats a dictionary of grouped simulation results into a single Discord-friendly string."""
     report_parts = []
     for crafting_type, results_list in grouped_results.items():
         report_parts.append(f"## [+] Crafting Type: {crafting_type.title()}")
         for result_data in results_list:
             item_name = result_data.get('item_name', 'Unknown Item')
-            star_thresholds = result_data.get('star_thresholds')
+            stamina_cost = result_data.get('stamina_cost')
             simulation_results = result_data.get('results', {})
             
-            report_parts.append(f"**Item: {item_name}")
+            report_parts.append(f"**Item: {item_name}** (Stamina: {stamina_cost})")
             
-            if not star_thresholds:
-                report_parts.append("- No star thresholds defined.")
+            if not simulation_results:
+                report_parts.append("- No results found.")
                 continue
 
-            # The results are nested under the deck size key
             deck_size = list(simulation_results.keys())[0]
-            decks = simulation_results[deck_size]
+            deck_results = simulation_results[deck_size]
 
-            for star_num in range(1, len(star_thresholds) + 1):
-                star_key = f"{star_num}_star"
-                result = decks.get(star_key)
-                if not result:
-                    continue
-
-                threshold = star_thresholds[star_num - 1]
-                chance = result.get('star_chances', {}).get(star_key, 0)
-                deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
-                
-                report_parts.append(
-                    f"- **Best for {star_num}-Star ({threshold} pts):** {chance:.2f}% | Deck: {deck_str}"
-                )
+            # --- Existing Per-Star Analysis Section ---
+            if deck_results:
+                report_parts.append(f"**Best Deck per Star Level**")
+                star_thresholds = result_data.get('star_thresholds', [])
+                for i, star_key in enumerate(deck_results):
+                    result = deck_results[star_key]
+                    threshold = star_thresholds[i]
+                    chance = result.get('star_chances', {}).get(star_key, 0)
+                    deck_str = ", ".join([f"{count}x {name}" for name, count in result['deck'].items()])
+                    report_parts.append(
+                        f"- **Best for {i+1}-Star ({threshold} pts):** {chance:.2f}% | Deck: {deck_str}"
+                    )
+            
             report_parts.append("---")
 
+    return "\n".join(report_parts)
+
+def format_wishpoints_report(grouped_results: Dict[str, list]) -> str:
+    """Formats the new report, sorted by Expected Wish Points."""
+    report_parts = []
+    for crafting_type, results_list in grouped_results.items():
+        report_parts.append(f"## [+] Crafting Type: {crafting_type.title()}")
+        # Sort items by the top deck's expected wish points
+        results_list.sort(
+            key=lambda x: x['results'][x['deck_size']][0].get('expected_wish_points', 0),
+            reverse=True
+        )
+        for result_data in results_list:
+            item_name = result_data.get('item_name', 'Unknown Item')
+            stamina_cost = result_data.get('stamina_cost')
+            deck_size = result_data.get('deck_size')
+            top_deck = result_data['results'][deck_size][0]
+            expected_wp = top_deck.get('expected_wish_points', 0)
+            wp_per_stamina = expected_wp / stamina_cost if stamina_cost else 0
+            deck_str = ", ".join([f"{count}x {name}" for name, count in top_deck['deck'].items()])
+
+            report_parts.append(f"**Item: {item_name}**")
+            report_parts.append(f"  - **Expected Wish Points**: {expected_wp:.2f} (Efficiency: {wp_per_stamina:.2f} WP/Stamina)")
+            report_parts.append(f"  - **Deck**: {deck_str}")
+            report_parts.append("---")
     return "\n".join(report_parts)
 
 
@@ -153,6 +181,13 @@ def main() -> None:
         action="store_true",
         help="Save the batch simulation report to a markdown file."
     )
+    parser.add_argument(
+        "--report-type",
+        type=str,
+        default="stars",
+        choices=["stars", "wishpoints"],
+        help="The type of report to generate: 'stars' for per-star optimization, 'wishpoints' for wish point efficiency."
+    )
     args = parser.parse_args()
 
     # --- Data Loading ---
@@ -177,7 +212,7 @@ def main() -> None:
                 continue
             # Only run for items that have star thresholds
             if 'star_thresholds' in item_data:
-                result = run_simulation_for_item(item_name, item_data, cards_data)
+                result = run_simulation_for_item(item_name, item_data, cards_data, report_type=args.report_type)
                 if result:
                     all_results.append(result)
         
@@ -189,15 +224,21 @@ def main() -> None:
             if crafting_type:
                 grouped_results[crafting_type].append(result)
         
-        discord_report = format_results_for_discord(grouped_results)
-        print("\n\n--- Batch Simulation Report ---")
+        if args.report_type == "wishpoints":
+            discord_report = format_wishpoints_report(grouped_results)
+            print("\n\n--- Wish Point Efficiency Report ---")
+        else: # "stars"
+            discord_report = format_stars_report(grouped_results)
+            print("\n\n--- Star-Optimized Analysis Report ---")
+        
         print(discord_report)
 
         if args.save_report:
             output_dir = "output"
             os.makedirs(output_dir, exist_ok=True)
             timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            filepath = os.path.join(output_dir, f"report_{timestamp}.md")
+            filename = f"report_{args.report_type}_{timestamp}.md"
+            filepath = os.path.join(output_dir, filename)
             with open(filepath, "w") as f:
                 f.write(discord_report)
             print(f"\nReport saved to: {filepath}")
@@ -230,7 +271,7 @@ def main() -> None:
         print(f"\n--- Analyzing for Item: {item_name_for_display} ---")
         if star_thresholds:
             print(f"    Crafting Type: {chosen_type_name}")
-            print("    Mode: Star-Optimization Analysis")
+            print(f"    Mode: {args.report_type.title()} Analysis")
         else:
             print("    Mode: Highest Average Score (Item-specific)")
 
@@ -253,22 +294,30 @@ def main() -> None:
 
     crafting_instance = CraftingClass(crafting_data)
     
+    # Get item data for the simulator
+    item_data_for_sim = items_data.get(args.item) if args.item else {}
+
     simulator = CardSimulator(
         crafting_instance,
         active_buff_id=active_buff_id,
-        star_thresholds=star_thresholds
+        star_thresholds=star_thresholds,
+        wish_points=item_data_for_sim.get('wish_points'),
+        stamina_cost=item_data_for_sim.get('stamina_cost')
     )
     
-    simulation_results = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results)
+    simulation_results = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results, report_type=args.report_type)
 
     # --- Results for Single Run ---
     if simulation_results:
         if star_thresholds:
             # Create a structured result similar to the batch mode
+            item_data_for_report = items_data.get(args.item) if args.item else {}
             single_item_result = {
                 'item_name': item_name_for_display,
                 'star_thresholds': star_thresholds,
-                'results': simulation_results
+                'stamina_cost': item_data_for_report.get('stamina_cost'),
+                'results': simulation_results,
+                'deck_size': item_data_for_report.get('deck_size')
             }
             
             # Group it for the formatter
@@ -276,8 +325,13 @@ def main() -> None:
             grouped_results[chosen_type_name].append(single_item_result)
             
             # Format and print
-            discord_report = format_results_for_discord(grouped_results)
-            print("\n\n--- Star-Optimized Analysis Report ---")
+            if args.report_type == "wishpoints":
+                discord_report = format_wishpoints_report(grouped_results)
+                print(f"\n\n--- Wish Point Efficiency Report for: {item_name_for_display} ---")
+            else: # "stars"
+                discord_report = format_stars_report(grouped_results)
+                print(f"\n\n--- Star-Optimized Analysis Report for: {item_name_for_display} ---")
+
             print(discord_report)
         else:
             print(f"\n\n--- Top {top_n_results} Highest-Score Decks for: {chosen_type_name} ---")

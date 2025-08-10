@@ -1,10 +1,5 @@
-feat(reports): Implement grouped and filtered batch reports
+fix: correct alchemy buff implementation
 
-This commit introduces a major enhancement to the reporting capabilities of the simulator, allowing for more organized and targeted analysis.
+Corrects the buff application logic in the `AlchemyCrafting` class to align with the established pattern in the `ForgingCrafting` class.
 
-Key changes:
-- Added a `--crafting_type` filter to the `--item all` batch mode, enabling users to run simulations for a specific crafting category.
-- Implemented result grouping by `crafting_type` in batch mode, providing a more structured and readable report.
-- Updated the Discord-friendly output formatter to display the new grouped format, with clear headers for each crafting type.
-- Unified the single-item analysis to use the same grouped report format, ensuring a consistent user experience across all analysis modes.
-- Replaced unicode emoji with text-based markers for better compatibility with different terminals.
+The previous implementation incorrectly checked for buff IDs in a list within the state, which was never populated by the simulator. This fix changes the logic to check for a boolean flag directly on the state object, which is the correct behavior.

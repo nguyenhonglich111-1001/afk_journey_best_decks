@@ -27,7 +27,9 @@ class CardSimulator:
         self,
         crafting_instance: BaseCrafting,
         active_buff_id: Optional[str] = None,
-        star_thresholds: Optional[List[int]] = None
+        star_thresholds: Optional[List[int]] = None,
+        wish_points: Optional[List[int]] = None,
+        stamina_cost: Optional[int] = None
     ) -> None:
         """
         Initializes the simulator.
@@ -36,13 +38,17 @@ class CardSimulator:
             crafting_instance: An object that inherits from BaseCrafting.
             active_buff_id: The unique identifier for a special item buff.
             star_thresholds: A list of scores to check for star-level consistency.
+            wish_points: A list of wish points awarded for each star level.
+            stamina_cost: The stamina cost to craft the item.
         """
         self.crafting = crafting_instance
         self.card_functions = self.crafting.get_card_functions()
         self.active_buff_id = active_buff_id
         self.star_thresholds = star_thresholds
+        self.wish_points = wish_points
+        self.stamina_cost = stamina_cost
 
-    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 50000) -> Dict[str, Any]:
+    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 10000) -> Dict[str, Any]:
         """
         Runs a Monte Carlo simulation for a given deck.
 
@@ -50,6 +56,7 @@ class CardSimulator:
         on the simulation mode (star chances or single-target consistency).
         """
         total_score = 0.0
+        total_wish_points = 0.0
         max_score = 0.0
 
         # This history object is persistent across all simulations for this one deck.
@@ -86,9 +93,14 @@ class CardSimulator:
 
             # Check against star thresholds
             if self.star_thresholds:
+                stars_achieved = 0
                 for i, threshold in enumerate(self.star_thresholds):
                     if final_score >= threshold:
                         successful_runs_stars[i] += 1
+                        stars_achieved += 1
+                
+                if self.wish_points:
+                    total_wish_points += self.wish_points[stars_achieved]
 
         # Prepare results
         results = {'score': total_score / simulations}
@@ -97,10 +109,12 @@ class CardSimulator:
                 f"{i+1}_star": (count / simulations) * 100
                 for i, count in enumerate(successful_runs_stars)
             }
+        if self.wish_points:
+            results['expected_wish_points'] = total_wish_points / simulations
         
         return results
 
-    def find_best_decks(self, deck_sizes: List[int], top_n: int = 5) -> Dict[int, Any]:
+    def find_best_decks(self, deck_sizes: List[int], top_n: int = 5, report_type: str = "stars") -> Dict[int, Any]:
         """
         Generates all possible unique decks, evaluates them, and returns the top
         results based on the simulation mode.
@@ -132,26 +146,29 @@ class CardSimulator:
                 deck_info = {
                     'deck': Counter(deck),
                     'score': eval_results.get('score', 0),
-                    'star_chances': eval_results.get('star_chances', {})
+                    'star_chances': eval_results.get('star_chances', {}),
+                    'expected_wish_points': eval_results.get('expected_wish_points', 0)
                 }
                 deck_scores.append(deck_info)
 
             print("\nEvaluation complete.")
 
-            # --- Analysis based on simulation mode ---
+            # --- Analysis ---
             if self.star_thresholds:
-                best_decks_for_stars: Dict[str, Dict[str, Any]] = {}
-                for i in range(1, len(self.star_thresholds) + 1):
-                    star_key = f"{i}_star"
-                    # Find the deck with the highest chance for this specific star
-                    best_deck = max(
-                        deck_scores,
-                        key=lambda x: x.get('star_chances', {}).get(star_key, 0)
-                    )
-                    best_decks_for_stars[star_key] = best_deck
-                results[size] = best_decks_for_stars
+                if report_type == "wishpoints" and self.wish_points and self.stamina_cost and self.stamina_cost > 0:
+                    # Sort by wish points per stamina
+                    deck_scores.sort(key=lambda x: x.get('expected_wish_points', 0) / self.stamina_cost, reverse=True)
+                    results[size] = deck_scores[:top_n]
+                else: # Default to "stars" report
+                    # Find the best deck for each star level
+                    best_decks_for_stars: Dict[str, Dict[str, Any]] = {}
+                    for i in range(1, len(self.star_thresholds) + 1):
+                        star_key = f"{i}_star"
+                        best_deck = max(deck_scores, key=lambda x: x.get('star_chances', {}).get(star_key, 0))
+                        best_decks_for_stars[star_key] = best_deck
+                    results[size] = best_decks_for_stars
             else:
-                # Default behavior: sort by highest average score
+                # Fallback for non-star mode
                 deck_scores.sort(key=lambda x: x.get('score', 0), reverse=True)
                 results[size] = deck_scores[:top_n]
 
