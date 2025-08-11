@@ -87,3 +87,11 @@ class AlchemyCrafting(BaseCrafting):
         highest_color = self._get_highest_color(state)
         state[highest_color] *= 2
         return state
+
+    def fuse(self, state: State) -> State:
+        """
+        This card's logic is handled in the simulator due to its special
+        end-of-production trigger. This function is a placeholder.
+        """
+        # Intentionally does nothing, as logic is in simulator.py
+        return state

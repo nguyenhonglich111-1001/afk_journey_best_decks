@@ -83,10 +83,19 @@ class CardSimulator:
 
             shuffled_deck = random.sample(list(deck), len(deck))
 
+            # Handle regular cards first
             for card_name in shuffled_deck:
+                if card_name == "Fuse":
+                    continue  # Skip Fuse in the main loop
                 func = self.card_functions.get(card_name)
                 if func:
                     func(state)
+
+            # After all other cards are played, check for Fuse's effect
+            if "Fuse" in deck:
+                if abs(state['yellow'] - state['blue']) < 10:
+                    state['yellow'] += 5
+                    state['blue'] += 5
 
             final_score = state['yellow'] * state['blue']
             total_score += final_score

@@ -82,6 +82,11 @@
             "card_name": "Distill",
             "card_quantity": 1,
             "card_function": "Highest color x2."
+        },
+        {
+            "card_name": "Fuse",
+            "card_quantity": 1,
+            "card_function": "Triggers if the color point gap is less than 10 when production ends. All colors +5."
         }
     ]
 }
