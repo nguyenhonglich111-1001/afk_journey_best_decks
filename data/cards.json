@@ -9,7 +9,7 @@
                 "correction_factor": 1.0,
                 "max_attempts": 10
             },
-            "card_function": "Random color +6, with a 50% change to trigger again. Max 10 re-triggers."
+            "card_function": "Random color +8, with a 50% change to trigger again. Max 10 re-triggers."
         },
         {
             "card_name": "Cut",
