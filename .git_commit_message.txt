@@ -1,9 +1,13 @@
-feat(alchemy): Implement "Fuse" card
+refactor(alchemy): Centralize pre-card effects
 
-This commit introduces the new "Fuse" card to the Alchemy crafting type.
+This commit refactors the `AlchemyCrafting` class to centralize the application of pre-card effects, improving maintainability and adhering to the DRY principle.
 
-The "Fuse" card has a unique mechanic where it triggers at the end of the production cycle, granting a bonus if the two color scores are close to each other.
+Previously, the `_apply_enchant_debuff`, `_apply_warmdust_deck_buff`, and `_apply_calming_warmdust_deck_buff` methods were redundantly called at the beginning of each individual card function (`ingredient`, `grind`, `enchant`, `distill`).
 
-- Adds the "Fuse" card definition to `data/cards.json`.
-- Implements the core end-of-cycle logic in the `CardSimulator` by checking for the "Fuse" card after all other cards have been played.
-- Adds a placeholder function in `src/crafting/alchemy.py` to maintain architectural consistency.
+Changes include:
+- Added a new `apply_pre_card_effects` hook to the `BaseCrafting` class, providing a generic point for pre-card logic.
+- Overrode this hook in `AlchemyCrafting` to consolidate the specific pre-card effect calls.
+- Updated the `CardSimulator` to call this new `apply_pre_card_effects` hook before executing each card's main function.
+- Removed the redundant pre-card effect calls from the individual card methods in `AlchemyCrafting`.
+
+This refactoring streamlines the card logic, making it easier to add or modify pre-card effects in the future without repetitive code changes.

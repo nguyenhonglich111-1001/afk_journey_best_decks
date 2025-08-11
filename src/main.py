@@ -140,7 +140,9 @@ def format_wishpoints_report(grouped_results: Dict[str, list]) -> str:
         report_parts.append(f"## [+] Crafting Type: {crafting_type.title()}")
         # Sort items by the top deck's expected wish points
         results_list.sort(
-            key=lambda x: x['results'][x['deck_size']][0].get('expected_wish_points', 0),
+            key=lambda x: (
+                x['results'][x['deck_size']][0].get('expected_wish_points', 0) / x.get('stamina_cost', 1)
+            ) if x.get('stamina_cost') else 0,
             reverse=True
         )
         for result_data in results_list:
@@ -204,13 +206,18 @@ def main() -> None:
         return
 
     # --- Workflow Selection ---
-    if args.item == "all":
-        print("--- Running simulations for all items. This may take a while... ---")
+    if args.item == "all" or args.crafting_type:
+        if args.crafting_type:
+            print(f"--- Running simulations for all items of type: {args.crafting_type}. This may take a while... ---")
+        else:
+            print("--- Running simulations for all items. This may take a while... ---")
+
         all_results = []
         for item_name, item_data in items_data.items():
+            # If a crafting_type is specified, filter by it. Otherwise, run for all.
             if args.crafting_type and item_data.get('crafting_type') != args.crafting_type:
                 continue
-            # Only run for items that have star thresholds
+            
             if 'star_thresholds' in item_data:
                 result = run_simulation_for_item(item_name, item_data, cards_data, report_type=args.report_type)
                 if result:
@@ -244,15 +251,8 @@ def main() -> None:
             print(f"\nReport saved to: {filepath}")
         return
 
-    # --- Single Run Logic (Item or General) ---
-    chosen_type_name = None
-    active_buff_id = None
-    star_thresholds = None
-    top_n_results = 2
-    deck_sizes_to_check = [3, 4, 5, 6]
-    item_name_for_display = None
-
-    if args.item:
+    # --- Single Run Logic (Item) ---
+    elif args.item:
         item = items_data.get(args.item)
         if not item:
             print(f"Error: Special item '{args.item}' not found in items.json.")
@@ -267,6 +267,7 @@ def main() -> None:
         star_thresholds = item.get('star_thresholds')
         deck_sizes_to_check = [item['deck_size']]
         item_name_for_display = args.item
+        top_n_results = 2
         
         print(f"\n--- Analyzing for Item: {item_name_for_display} ---")
         if star_thresholds:
@@ -274,11 +275,6 @@ def main() -> None:
             print(f"    Mode: {args.report_type.title()} Analysis")
         else:
             print("    Mode: Highest Average Score (Item-specific)")
-
-    elif args.crafting_type:
-        chosen_type_name = args.crafting_type
-        print(f"\n--- Analyzing Crafting Type: {chosen_type_name} ---")
-        print("    Mode: Finding highest average score decks.")
     
     else:
         print_usage_guide()
@@ -305,7 +301,7 @@ def main() -> None:
         stamina_cost=item_data_for_sim.get('stamina_cost')
     )
     
-    simulation_results = simulator.find_best_decks(deck_sizes_to_check, top_n=top_n_results, report_type=args.report_type)
+    simulation_results = simulator.find_best_decks(deck_sizes_to_check, report_type=args.report_type)
 
     # --- Results for Single Run ---
     if simulation_results:

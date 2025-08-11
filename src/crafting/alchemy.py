@@ -53,9 +53,6 @@ class AlchemyCrafting(BaseCrafting):
 
     def ingredient(self, state: State) -> State:
         """Highest color +10. Lowest color -2."""
-        self._apply_enchant_debuff(state)
-        self._apply_warmdust_deck_buff(state)
-        self._apply_calming_warmdust_deck_buff(state)
         highest_color = self._get_highest_color(state)
         lowest_color = self._get_lowest_color(state)
         state[highest_color] += 10
