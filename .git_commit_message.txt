@@ -1,5 +1,9 @@
-fix: correct alchemy buff implementation
+feat(alchemy): Implement "Fuse" card
 
-Corrects the buff application logic in the `AlchemyCrafting` class to align with the established pattern in the `ForgingCrafting` class.
+This commit introduces the new "Fuse" card to the Alchemy crafting type.
 
-The previous implementation incorrectly checked for buff IDs in a list within the state, which was never populated by the simulator. This fix changes the logic to check for a boolean flag directly on the state object, which is the correct behavior.
+The "Fuse" card has a unique mechanic where it triggers at the end of the production cycle, granting a bonus if the two color scores are close to each other.
+
+- Adds the "Fuse" card definition to `data/cards.json`.
+- Implements the core end-of-cycle logic in the `CardSimulator` by checking for the "Fuse" card after all other cards have been played.
+- Adds a placeholder function in `src/crafting/alchemy.py` to maintain architectural consistency.

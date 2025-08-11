@@ -1,5 +1,5 @@
 import random
-from typing import Dict, Callable
+from typing import Dict, Callable, Tuple
 from .base_crafting import BaseCrafting, State
 
 class AlchemyCrafting(BaseCrafting):
@@ -88,10 +88,11 @@ class AlchemyCrafting(BaseCrafting):
         state[highest_color] *= 2
         return state
 
-    def fuse(self, state: State) -> State:
-        """
-        This card's logic is handled in the simulator due to its special
-        end-of-production trigger. This function is a placeholder.
-        """
-        # Intentionally does nothing, as logic is in simulator.py
+    def apply_end_of_cycle_effects(self, state: State, deck: Tuple[str, ...]) -> State:
+        """Applies the logic for the Fuse card if it's in the deck."""
+        if "Fuse" in deck:
+            # Check the condition: color point gap is less than 10.
+            if abs(state['yellow'] - state['blue']) < 10:
+                state['yellow'] += 5
+                state['blue'] += 5
         return state

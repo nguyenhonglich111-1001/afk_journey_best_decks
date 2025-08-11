@@ -86,7 +86,8 @@
         {
             "card_name": "Fuse",
             "card_quantity": 1,
-            "card_function": "Triggers if the color point gap is less than 10 when production ends. All colors +5."
+            "card_function": "Triggers if the color point gap is less than 10 when production ends. All colors +5.",
+            "trigger": "end_of_cycle"
         }
     ]
 }

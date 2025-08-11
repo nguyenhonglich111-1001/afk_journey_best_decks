@@ -1,7 +1,7 @@
 import random
 from abc import ABC, abstractmethod
 from collections import Counter
-from typing import List, Dict, Callable, Any
+from typing import List, Dict, Callable, Any, Tuple
 
 # A type alias for the state dictionary used throughout the simulation.
 # This makes it clear what kind of data the card functions operate on.
@@ -70,6 +70,13 @@ class BaseCrafting(ABC):
                 card's logic.
         """
         pass
+
+    def apply_end_of_cycle_effects(self, state: State, deck: Tuple[str, ...]) -> State:
+        """
+        Applies effects for cards that trigger at the end of the crafting process.
+        Base implementation does nothing, to be overridden by subclasses.
+        """
+        return state
 
     @staticmethod
     def _get_random_color() -> str:
