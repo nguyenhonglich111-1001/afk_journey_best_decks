@@ -154,7 +154,8 @@ def format_wishpoints_report(grouped_results: Dict[str, list]) -> str:
             wp_per_stamina = expected_wp / stamina_cost if stamina_cost else 0
             deck_str = ", ".join([f"{count}x {name}" for name, count in top_deck['deck'].items()])
 
-            report_parts.append(f"**Item: {item_name}**")
+            report_parts.append(
+                f"**Item: {item_name}** (Stamina: {stamina_cost})")
             report_parts.append(f"  - **Expected Wish Points**: {expected_wp:.2f} (Efficiency: {wp_per_stamina:.2f} WP/Stamina)")
             report_parts.append(f"  - **Deck**: {deck_str}")
             report_parts.append("---")
