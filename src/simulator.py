@@ -75,6 +75,8 @@ class CardSimulator:
                 'charge_count': 0, 'first_forge_played': False,
                 'fe_played_count': 0, 'enchant_debuff': 0,
                 'ferment_buff_active': False,
+                'heat_control_trigger_count': 0,
+                'artisan_cards_played_count': 0,
                 # Pass a reference to the persistent history into each run.
                 'prd_history': prd_history,
                 'multi_forge_triggers': 0

@@ -95,6 +95,7 @@ class KitchenCrafting(BaseCrafting):
         # --- 6. Update the Persistent History ---
         prd_history['hc_plays'] = current_plays + 1
         prd_history['hc_successes'] = current_successes + successes_this_card
+        state['heat_control_trigger_count'] += successes_this_card
         
         return state
 
@@ -136,4 +137,13 @@ class KitchenCrafting(BaseCrafting):
         for both colors. This effect stacks.
         """
         state['slow_cook_all_color_bonus'] = state.get('slow_cook_all_color_bonus', 0) + 2
+        return state
+
+    def apply_end_of_cycle_effects(self, state: State, deck: tuple[str, ...]) -> State:
+        """
+        Applies end-of-cycle effects for the Kitchen crafting type.
+        """
+        if state.get('dried_mushroom_buff') and state.get('heat_control_trigger_count', 0) >= 7:
+            state['yellow'] += 3
+            state['blue'] += 3
         return state

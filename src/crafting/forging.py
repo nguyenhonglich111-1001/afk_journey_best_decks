@@ -6,18 +6,30 @@ class ForgingCrafting(BaseCrafting):
     """
     Implements the logic for the 'forging' crafting type.
     """
+
     def get_card_functions(self) -> Dict[str, Callable[[State], State]]:
         """
         Maps forging card names to their specific functions.
+        This version explicitly maps Artisan cards to their wrapped versions.
         """
         return {
-            "Forge Expert": self.forge_expert,
-            "Forge": self.forge,
+            "Forge Expert": self._wrapped_forge_expert,
+            "Forge": self._wrapped_forge,
             "Ignite": self.ignite,
             "Heat Up": self.heat_up,
             "Charge": self.charge,
             "Multi Forge": self.multi_forge,
         }
+
+    # --- Wrapped Artisan Methods ---
+
+    def _wrapped_forge_expert(self, state: State) -> State:
+        state['artisan_cards_played_count'] = state.get('artisan_cards_played_count', 0) + 1
+        return self.forge_expert(state)
+
+    def _wrapped_forge(self, state: State) -> State:
+        state['artisan_cards_played_count'] = state.get('artisan_cards_played_count', 0) + 1
+        return self.forge(state)
 
     # --- Card Function Implementations ---
 
@@ -122,4 +134,13 @@ class ForgingCrafting(BaseCrafting):
         Sets up the state for the Multi Forge effect.
         """
         state['multi_forge_triggers'] = state.get('multi_forge_triggers', 0) + 2
+        return state
+
+    def apply_end_of_cycle_effects(self, state: State, deck: tuple[str, ...]) -> State:
+        """
+        Applies end-of-cycle effects for the Forging crafting type.
+        """
+        if state.get('warm_stone_armor_buff') and state.get('artisan_cards_played_count', 0) >= 6:
+            state['yellow'] += 3
+            state['blue'] += 3
         return state
