@@ -33,6 +33,13 @@ class AlchemyCrafting(BaseCrafting):
             highest_color = self._get_highest_color(state)
             state[highest_color] += 3
 
+    def apply_pre_card_effects(self, state: State) -> State:
+        """Applies all effects that should trigger before a card's main logic."""
+        self._apply_enchant_debuff(state)
+        self._apply_warmdust_deck_buff(state)
+        self._apply_calming_warmdust_deck_buff(state)
+        return state
+
     def get_card_functions(self) -> Dict[str, Callable[[State], State]]:
         """Maps alchemy card names to their specific functions."""
         return {
@@ -57,9 +64,6 @@ class AlchemyCrafting(BaseCrafting):
 
     def grind(self, state: State) -> State:
         """Lowest color +4. Highest color -2"""
-        self._apply_enchant_debuff(state)
-        self._apply_warmdust_deck_buff(state)
-        self._apply_calming_warmdust_deck_buff(state)
         highest_color = self._get_highest_color(state)
         lowest_color = self._get_lowest_color(state)
         state[lowest_color] += 4
@@ -69,11 +73,6 @@ class AlchemyCrafting(BaseCrafting):
 
     def enchant(self, state: State) -> State:
         """Lowest color +8; increments future card debuff."""
-        # Apply debuff from any previously played Enchant cards first.
-        self._apply_enchant_debuff(state)
-        self._apply_warmdust_deck_buff(state)
-        self._apply_calming_warmdust_deck_buff(state)
-        # Now, apply this card's effect.
         lowest_color = self._get_lowest_color(state)
         state[lowest_color] += 8
         state['enchant_debuff'] = state.get('enchant_debuff', 0) + 1
@@ -81,9 +80,6 @@ class AlchemyCrafting(BaseCrafting):
 
     def distill(self, state: State) -> State:
         """Highest color x2."""
-        self._apply_enchant_debuff(state)
-        self._apply_warmdust_deck_buff(state)
-        self._apply_calming_warmdust_deck_buff(state)
         highest_color = self._get_highest_color(state)
         state[highest_color] *= 2
         return state

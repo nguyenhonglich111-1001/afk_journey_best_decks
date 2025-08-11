@@ -78,6 +78,13 @@ class BaseCrafting(ABC):
         """
         return state
 
+    def apply_pre_card_effects(self, state: State) -> State:
+        """
+        Applies any effects that should trigger before a card's main logic.
+        Base implementation does nothing; to be overridden by subclasses if needed.
+        """
+        return state
+
     @staticmethod
     def _get_random_color() -> str:
         """

@@ -17,3 +17,6 @@ build/
 
 # Simulation Reports
 output/
+
+# Plans directory
+plans/
