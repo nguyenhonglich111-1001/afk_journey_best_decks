@@ -16,6 +16,7 @@ class ForgingCrafting(BaseCrafting):
             "Ignite": self.ignite,
             "Heat Up": self.heat_up,
             "Charge": self.charge,
+            "Multi Forge": self.multi_forge,
         }
 
     # --- Card Function Implementations ---
@@ -114,4 +115,11 @@ class ForgingCrafting(BaseCrafting):
         Increments the charge counter for future Artisan cards.
         """
         state['charge_count'] = state.get('charge_count', 0) + 1
+        return state
+
+    def multi_forge(self, state: State) -> State:
+        """
+        Sets up the state for the Multi Forge effect.
+        """
+        state['multi_forge_triggers'] = state.get('multi_forge_triggers', 0) + 2
         return state

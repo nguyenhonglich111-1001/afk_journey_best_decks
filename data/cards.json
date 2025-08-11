@@ -60,6 +60,11 @@
             "card_name": "Charge",
             "card_function": "Next Artisan card x1 affect all colors.",
             "card_quantity": 2
+        },
+        {
+            "card_name": "Multi Forge",
+            "card_quantity": 2,
+            "card_function": "Next card x1 with Artisan attribute with trigger extra 2 times"
         }
     ],
     "alchemy": [

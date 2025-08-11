@@ -77,6 +77,7 @@ class CardSimulator:
                 'ferment_buff_active': False,
                 # Pass a reference to the persistent history into each run.
                 'prd_history': prd_history,
+                'multi_forge_triggers': 0
             }
             if self.active_buff_id:
                 state[self.active_buff_id] = True
@@ -88,7 +89,21 @@ class CardSimulator:
                 func = self.card_functions.get(card_name)
                 if func:
                     state = self.crafting.apply_pre_card_effects(state)
-                    func(state)
+                    
+                    # Get card definition to check for 'Artisan' attribute
+                    card_def = next((c for c in self.crafting._card_definitions if c['card_name'] == card_name), None)
+                    
+                    # Check for Multi Forge buff
+                    if state.get('multi_forge_triggers', False) and card_def and card_def.get('attribute', "") == 'Artisan':
+                        # Trigger the card the initial time
+                        func(state)
+                        # Trigger it the extra times
+                        for _ in range(state.get('multi_forge_triggers', 0)):
+                            func(state)
+                        # Deactivate the buff
+                        state['multi_forge_triggers'] = 0
+                    else:
+                        func(state)
 
             # End-of-cycle effects
             state = self.crafting.apply_end_of_cycle_effects(state, deck)
