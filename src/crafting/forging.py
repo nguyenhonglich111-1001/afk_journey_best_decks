@@ -126,14 +126,37 @@ class ForgingCrafting(BaseCrafting):
         """
         Increments the charge counter for future Artisan cards.
         """
-        state['charge_count'] = state.get('charge_count', 0) + 1
+        state['charge_count'] = state.get('charge_count', 0) + 3
         return state
 
     def multi_forge(self, state: State) -> State:
+        """Next card x1 with Artisan attribute with trigger extra 2 times"""
+        state['multi_forge_triggers'] = state.get(
+            'multi_forge_triggers', 0) + 2
+        return state
+
+    def play_card(self, card_name: str, state: State) -> State:
         """
-        Sets up the state for the Multi Forge effect.
+        Overrides the base play_card to handle the Multi Forge interaction
+        with Artisan cards.
         """
-        state['multi_forge_triggers'] = state.get('multi_forge_triggers', 0) + 2
+        func = self.get_card_functions().get(card_name)
+        if not func:
+            return state
+
+        card_def = next((c for c in self._card_definitions if c['card_name'] == card_name), None)
+        
+        if state.get('multi_forge_triggers', 0) > 0 and card_def and card_def.get('attribute') == 'Artisan':
+            # Trigger the card the initial time
+            func(state)
+            # Trigger it the extra times
+            for _ in range(state['multi_forge_triggers']):
+                func(state)
+            # Deactivate the buff
+            state['multi_forge_triggers'] = 0
+        else:
+            func(state)
+            
         return state
 
     def apply_end_of_cycle_effects(self, state: State, deck: tuple[str, ...]) -> State:

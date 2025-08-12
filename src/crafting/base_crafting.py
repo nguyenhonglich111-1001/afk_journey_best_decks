@@ -85,6 +85,17 @@ class BaseCrafting(ABC):
         """
         return state
 
+    def play_card(self, card_name: str, state: State) -> State:
+        """
+        Plays a card, handling any state-based interactions.
+        The default implementation simply executes the card's function.
+        Subclasses can override this for more complex interactions.
+        """
+        func = self.get_card_functions().get(card_name)
+        if func:
+            func(state)
+        return state
+
     @staticmethod
     def _get_random_color() -> str:
         """
