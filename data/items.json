@@ -1,22 +1,4 @@
 {
-    "Carve Box": {
-        "crafting_type": "forging",
-        "deck_size": 4,
-        "buff_id": "carve_box_buff",
-        "description": "The first Forge card affects all colors.",
-        "star_thresholds": [152, 180, 182, 190],
-        "wish_points": [280, 350, 385, 438, 543],
-        "stamina_cost": 10
-    },
-    "Copper Stewpot": {
-        "crafting_type": "forging",
-        "deck_size": 5,
-        "buff_id": "copper_stewpot_buff",
-        "description": "30% chance to trigger Forge Expert 1 extra time.",
-        "star_thresholds": [566, 675, 797, 1040],
-        "wish_points": [280, 350, 385, 438, 543],
-        "stamina_cost": 10
-    },
     "Chillguard Armor": {
         "crafting_type": "forging",
         "deck_size": 6,
@@ -121,5 +103,30 @@
         "star_thresholds": [13700, 18100, 29600, 56900],
         "wish_points": [678, 848, 933, 1060, 1314],
         "stamina_cost": 16
+    },
+    "Pink Stuff": {
+        "crafting_type": "kitchen",
+        "deck_size": 7,
+        "star_thresholds": [10300, 12600, 14300, 20800],
+        "wish_points": [878, 1098, 1208, 1373, 1702],
+        "stamina_cost": 18
+    },
+    "Soothing": {
+        "crafting_type": "alchemy",
+        "deck_size": 8,
+        "buff_id": "soothing_buff",
+        "description": "Special buff: highest color +3 for each card trigger.",
+        "star_thresholds": [3870, 4240, 4580, 5240],
+        "wish_points": [878, 1098, 1208, 1373, 1702],
+        "stamina_cost": 18
+    },
+    "Illusion": {
+        "crafting_type": "alchemy",
+        "deck_size": 8,
+        "buff_id": "illusion_buff",
+        "description": "Special buff: lowest color +1 for each card trigger.",
+        "star_thresholds": [2990, 3260, 3510, 4070],
+        "wish_points": [878, 1098, 1208, 1373, 1702],
+        "stamina_cost": 18
     }
 }

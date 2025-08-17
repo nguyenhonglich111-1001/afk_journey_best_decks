@@ -88,6 +88,7 @@ class CardSimulator:
 
             # On-play effects loop
             for card_name in shuffled_deck:
+                state = self.crafting.apply_pre_card_effects(state)
                 state = self.crafting.play_card(card_name, state)
 
             # End-of-cycle effects

@@ -33,11 +33,25 @@ class AlchemyCrafting(BaseCrafting):
             highest_color = self._get_highest_color(state)
             state[highest_color] += 3
 
+    def _apply_soothing_buff(self, state: State):
+        """Applies the buff for the Soothing item."""
+        if state.get("soothing_buff", False):
+            highest_color = self._get_highest_color(state)
+            state[highest_color] += 3
+
+    def _apply_illusion_buff(self, state: State):
+        """Applies the buff for the Illusion item."""
+        if state.get("illusion_buff", False):
+            lowest_color = self._get_lowest_color(state)
+            state[lowest_color] += 1
+
     def apply_pre_card_effects(self, state: State) -> State:
         """Applies all effects that should trigger before a card's main logic."""
         self._apply_enchant_debuff(state)
         self._apply_warmdust_deck_buff(state)
         self._apply_calming_warmdust_deck_buff(state)
+        self._apply_soothing_buff(state)
+        self._apply_illusion_buff(state)
         return state
 
     def get_card_functions(self) -> Dict[str, Callable[[State], State]]:
