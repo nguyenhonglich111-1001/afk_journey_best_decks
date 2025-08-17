@@ -128,5 +128,23 @@
         "star_thresholds": [2990, 3260, 3510, 4070],
         "wish_points": [878, 1098, 1208, 1373, 1702],
         "stamina_cost": 18
+    },
+    "Warming Incense": {
+        "crafting_type": "alchemy",
+        "deck_size": 6,
+        "stamina_cost": 16,
+        "wish_points": [678, 848, 933, 1060, 1314],
+        "star_thresholds": [2070, 2340, 2670, 3420],
+        "buff_id": "warming_incense_buff",
+        "description": "All ingredient cards trigger 1 extra time."
+    },
+    "Calmwind Incense": {
+        "crafting_type": "alchemy",
+        "deck_size": 6,
+        "stamina_cost": 16,
+        "wish_points": [678, 848, 933, 1060, 1314],
+        "star_thresholds": [1290, 1430, 1560, 1870],
+        "buff_id": "calmwind_incense_buff",
+        "description": "All grind cards trigger 1 extra time."
     }
 }

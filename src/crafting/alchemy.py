@@ -103,3 +103,24 @@ class AlchemyCrafting(BaseCrafting):
                 state['yellow'] += 5
                 state['blue'] += 5
         return state
+
+    def play_card(self, card_name: str, state: State) -> State:
+        """
+        Overrides the base play_card to handle special buffs for alchemy cards.
+        """
+        func = self.get_card_functions().get(card_name)
+        if not func:
+            return state
+
+        # Original card play
+        state = func(state)
+
+        # Handle Warming Incense buff for Ingredient card
+        if card_name == "Ingredient" and state.get("warming_incense_buff"):
+            state = func(state)  # Trigger again
+
+        # Handle Calmwind Incense buff for Grind card
+        if card_name == "Grind" and state.get("calmwind_incense_buff"):
+            state = func(state)  # Trigger again
+
+        return state
