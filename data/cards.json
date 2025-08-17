@@ -36,7 +36,7 @@
     "forging": [
         {
             "card_name": "Forge Expert",
-            "card_function": "Random color +4. All future Forge Expert cards gain +3",
+            "card_function": "Random color +4. All future Forge Expert cards gain +4",
             "card_quantity": 4,
             "attribute": "Artisan"
         },
@@ -53,12 +53,12 @@
         },
         {
             "card_name": "Heat Up",
-            "card_function": "All future cards attribute Artisan gain +3",
+            "card_function": "All future cards attribute Artisan gain +6",
             "card_quantity": 2
         },
         {
             "card_name": "Charge",
-            "card_function": "Next Artisan card x1 affect all colors.",
+            "card_function": "Next Artisan card x3 affect all colors.",
             "card_quantity": 2
         },
         {

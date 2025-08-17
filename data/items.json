@@ -5,7 +5,7 @@
         "buff_id": "carve_box_buff",
         "description": "The first Forge card affects all colors.",
         "star_thresholds": [152, 180, 182, 190],
-        "wish_points": [280,350,385,438,543],
+        "wish_points": [280, 350, 385, 438, 543],
         "stamina_cost": 10
     },
     "Copper Stewpot": {
@@ -30,6 +30,13 @@
         "star_thresholds": [2210, 2600, 2920, 3770],
         "wish_points": [515, 644, 708, 805, 998],
         "stamina_cost": 14
+    },
+    "Flameguard Plate": {
+        "crafting_type": "forging",
+        "deck_size": 8,
+        "star_thresholds": [42400, 62900, 93900, 165000],
+        "wish_points": [878,1098,1208,1373,1702],
+        "stamina_cost": 18
     },
     "Grape Vinegar": {
         "crafting_type": "kitchen",
@@ -68,7 +75,7 @@
         "deck_size": 6,
         "description": "A spicy and dry fruit.",
         "star_thresholds": [2160, 2450, 2810, 3520],
-        "wish_points": [515,644,708,805,998],
+        "wish_points": [515, 644, 708, 805, 998],
         "stamina_cost": 14
     },
     "Calming Bouquet": {
@@ -103,7 +110,7 @@
         "buff_id": "dried_mushroom_buff",
         "description": "If 7 or more heat control cards have been trigger when producing, all colors +3 at the end.",
         "star_thresholds": [2730, 3150, 4460, 5260],
-        "wish_points": [678, 848,933,1060,1314],
+        "wish_points": [678, 848, 933, 1060, 1314],
         "stamina_cost": 16
     },
     "Warm Stone Armor": {

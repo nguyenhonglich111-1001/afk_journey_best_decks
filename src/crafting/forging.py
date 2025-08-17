@@ -119,7 +119,7 @@ class ForgingCrafting(BaseCrafting):
         """
         All future cards with attribute Artisan gain +3.
         """
-        state['artisan_bonus'] = state.get('artisan_bonus', 0) + 3
+        state['artisan_bonus'] = state.get('artisan_bonus', 0) + 6
         return state
 
     def charge(self, state: State) -> State:
