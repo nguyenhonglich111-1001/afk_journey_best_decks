@@ -20,38 +20,6 @@
         "wish_points": [878,1098,1208,1373,1702],
         "stamina_cost": 18
     },
-    "Grape Vinegar": {
-        "crafting_type": "kitchen",
-        "deck_size": 6,
-        "star_thresholds": [1070, 1270, 1420, 1740],
-        "wish_points": [280, 350, 385, 438, 543],
-        "stamina_cost": 10
-    },
-    "Salted Raisin": {
-        "crafting_type": "kitchen",
-        "deck_size": 4,
-        "buff_id": "salted_raisin_buff",
-        "description": "Cutting always yields the highest points (8).",
-        "star_thresholds": [344, 440, 462, 647],
-        "wish_points": [280, 350, 385, 438, 543],
-        "stamina_cost": 10
-    },
-    "Salted Dry Fruit": {
-        "crafting_type": "kitchen",
-        "deck_size": 5,
-        "description": "A salty and dry fruit.",
-        "star_thresholds": [1040, 1230, 1350, 1640],
-        "wish_points": [384, 480, 528, 600, 744],
-        "stamina_cost": 12
-    },
-    "Spice Dry Fruit": {
-        "crafting_type": "kitchen",
-        "deck_size": 7,
-        "description": "A spicy and dry fruit.",
-        "star_thresholds": [2670, 2950, 3340, 4020],
-        "wish_points": [384, 480, 528, 600, 744],
-        "stamina_cost": 12
-    },
     "Shroom Stir Fry": {
         "crafting_type": "kitchen",
         "deck_size": 6,

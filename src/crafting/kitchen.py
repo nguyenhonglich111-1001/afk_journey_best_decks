@@ -136,7 +136,7 @@ class KitchenCrafting(BaseCrafting):
         Adds +2 to the bonus that all future Heat Control flips will receive
         for both colors. This effect stacks.
         """
-        state['slow_cook_all_color_bonus'] = state.get('slow_cook_all_color_bonus', 0) + 2
+        state['slow_cook_all_color_bonus'] = state.get('slow_cook_all_color_bonus', 0) + 4
         return state
 
     def apply_end_of_cycle_effects(self, state: State, deck: tuple[str, ...]) -> State:
