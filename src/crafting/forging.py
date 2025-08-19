@@ -126,7 +126,7 @@ class ForgingCrafting(BaseCrafting):
         """
         Increments the charge counter for future Artisan cards.
         """
-        state['charge_count'] = state.get('charge_count', 0) + 3
+        state['charge_count'] = state.get('charge_count', 0) + 100
         return state
 
     def multi_forge(self, state: State) -> State:
