@@ -31,9 +31,20 @@
             "card_name": "Ferment",
             "card_function": "Guarantees the first flip of all future Heat Control cards will succeed. Don't stacks so only add 1 card.",
             "card_quantity": 1
+        },
+        {
+            "card_name": "Bake",
+            "card_quantity": 1,
+            "card_function": "Color point gaps are redistributed when production ends.",
+            "trigger": "end_of_cycle"
         }
     ],
     "forging": [
+        {
+            "card_name": "Reforge",
+            "card_quantity": 1,
+            "card_function": "All future Artisan cards grant +3 to both colors. This effect stacks."
+        },
         {
             "card_name": "Forge Expert",
             "card_function": "Random color +4. All future Forge Expert cards gain +4",
@@ -93,6 +104,11 @@
             "card_quantity": 1,
             "card_function": "Triggers if the color point gap is less than 10 when production ends. All colors +5.",
             "trigger": "end_of_cycle"
+        },
+        {
+            "card_name": "Overload",
+            "card_quantity": 1,
+            "card_function": "Highest color +40; random color -3 for each future card triggered."
         }
     ]
 }

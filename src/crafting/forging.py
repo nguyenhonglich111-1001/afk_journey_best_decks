@@ -19,6 +19,7 @@ class ForgingCrafting(BaseCrafting):
             "Heat Up": self.heat_up,
             "Charge": self.charge,
             "Multi Forge": self.multi_forge,
+            "Reforge": self.reforge,
         }
 
     # --- Wrapped Artisan Methods ---
@@ -63,6 +64,12 @@ class ForgingCrafting(BaseCrafting):
                 color = self._get_random_color()
                 state[color] += bonus
             
+            # Apply the Reforge bonus if active
+            reforge_bonus = state.get('reforge_bonus', 0)
+            if reforge_bonus > 0:
+                state['yellow'] += reforge_bonus
+                state['blue'] += reforge_bonus
+
             # CRUCIAL: The bonus pool is only updated by a card's base trigger.
             if is_base_trigger:
                 state['forge_expert_bonus'] += (4 * fe_played_count)
@@ -85,6 +92,12 @@ class ForgingCrafting(BaseCrafting):
         - Consumes a 'Charge' to affect both colors.
         - The first Forge card played is affected by the 'Carve Box' buff.
         """
+        # Apply the Reforge bonus if active
+        reforge_bonus = state.get('reforge_bonus', 0)
+        if reforge_bonus > 0:
+            state['yellow'] += reforge_bonus
+            state['blue'] += reforge_bonus
+            
         artisan_bonus = state.get('artisan_bonus', 0)
         bonus = 5 + artisan_bonus
 
@@ -133,6 +146,13 @@ class ForgingCrafting(BaseCrafting):
         """Next card x1 with Artisan attribute with trigger extra 2 times"""
         state['multi_forge_triggers'] = state.get(
             'multi_forge_triggers', 0) + 2
+        return state
+
+    def reforge(self, state: State) -> State:
+        """
+        All future Artisan cards grant +3 to both colors. This effect stacks.
+        """
+        state['reforge_bonus'] = state.get('reforge_bonus', 0) + 3
         return state
 
     def play_card(self, card_name: str, state: State) -> State:
