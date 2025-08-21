@@ -73,7 +73,7 @@ class KitchenCrafting(BaseCrafting):
             state['yellow'] += all_color_bonus
             state['blue'] += all_color_bonus
             color = self._get_random_color()
-            state[color] += 8  # Base effect of +8 to a random color
+            state[color] += 10  # Base effect of +8 to a random color
 
         # --- 4. Perform Base and Guaranteed Flips ---
         # Heat Control always gets one base flip.
@@ -144,6 +144,20 @@ class KitchenCrafting(BaseCrafting):
         """
         Applies end-of-cycle effects for the Kitchen crafting type.
         """
+        if "Bake" in deck:
+            yellow_score = state['yellow']
+            blue_score = state['blue']
+            
+            difference = abs(yellow_score - blue_score)
+            adjustment = difference / 2
+            
+            if yellow_score > blue_score:
+                state['yellow'] -= adjustment
+                state['blue'] += adjustment
+            else:
+                state['yellow'] += adjustment
+                state['blue'] -= adjustment
+
         if state.get('dried_mushroom_buff') and state.get('heat_control_trigger_count', 0) >= 7:
             state['yellow'] += 3
             state['blue'] += 3

@@ -21,6 +21,13 @@ class AlchemyCrafting(BaseCrafting):
             color = self._get_random_color()
             state[color] = max(1, state[color] - 1) # Ensure score doesn't go below 1
 
+    def _apply_overload_debuff(self, state: State):
+        """Applies the debuff from previously played Overload cards."""
+        debuff_stacks = state.get('overload_debuff', 0)
+        for _ in range(debuff_stacks):
+            color = self._get_random_color()
+            state[color] = max(1, state[color] - 3) # Ensure score doesn't go below 1
+
     def _apply_warmdust_deck_buff(self, state: State):
         """Applies the buff for the Warmdust-Deck item."""
         if state.get("warmdust_deck_buff", False):
@@ -48,6 +55,7 @@ class AlchemyCrafting(BaseCrafting):
     def apply_pre_card_effects(self, state: State) -> State:
         """Applies all effects that should trigger before a card's main logic."""
         self._apply_enchant_debuff(state)
+        self._apply_overload_debuff(state)
         self._apply_warmdust_deck_buff(state)
         self._apply_calming_warmdust_deck_buff(state)
         self._apply_soothing_buff(state)
@@ -61,9 +69,16 @@ class AlchemyCrafting(BaseCrafting):
             "Grind": self.grind,
             "Enchant": self.enchant,
             "Distill": self.distill,
+            "Overload": self.overload,
         }
 
     # --- Card Function Implementations ---
+    def overload(self, state: State) -> State:
+        """Highest color +40; increments future card debuff."""
+        highest_color = self._get_highest_color(state)
+        state[highest_color] += 40
+        state['overload_debuff'] = state.get('overload_debuff', 0) + 1
+        return state
 
     def ingredient(self, state: State) -> State:
         """Highest color +10. Lowest color -2."""
