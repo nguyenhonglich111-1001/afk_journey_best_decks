@@ -80,8 +80,9 @@ class KitchenCrafting(BaseCrafting):
         _trigger_flip()
         successes_this_card += 1
 
-        # It gets a second, guaranteed flip if the Ferment buff is active.
+        # It gets a second, guaranteed 2 flip if the Ferment buff is active.
         if state.get('ferment_buff_active', False):
+            _trigger_flip()
             _trigger_flip()
 
         # --- 5. Perform Additional Random Flips via PRD ---

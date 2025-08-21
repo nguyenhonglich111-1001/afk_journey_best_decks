@@ -29,7 +29,7 @@
         },
         {
             "card_name": "Ferment",
-            "card_function": "Guarantees the first flip of all future Heat Control cards will succeed. Don't stacks so only add 1 card.",
+            "card_function": "Guarantees the first 2 flips of all future Heat Control cards will succeed. Don't stacks so only add 1 card.",
             "card_quantity": 1
         }
     ],
