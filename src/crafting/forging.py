@@ -53,7 +53,7 @@ class ForgingCrafting(BaseCrafting):
             # Read the most current bonus values from the state.
             artisan_bonus = state.get('artisan_bonus', 0)
             forge_expert_bonus = state.get('forge_expert_bonus', 0)
-            bonus = 4 + artisan_bonus + forge_expert_bonus
+            bonus = 5 + artisan_bonus + forge_expert_bonus
 
             # Apply the bonus score.
             if state.get('charge_count', 0) > 0:
