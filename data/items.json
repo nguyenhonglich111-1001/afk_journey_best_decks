@@ -28,6 +28,22 @@
         "wish_points": [1120, 1400, 1540, 1750, 2170],
         "stamina_cost": 20
     },
+    "Fireproof Helm": {
+        "crafting_type": "forging",
+        "deck_size": 8,
+        "buff_id": "fireproof_helm_buff",
+        "star_thresholds": [44500, 56800, 85000, 146000],
+        "wish_points": [1120, 1400, 1540, 1750, 2170],
+        "stamina_cost": 20
+    },
+    "Odd Sweet": {
+        "crafting_type": "forging",
+        "deck_size": 8,
+        "buff_id": "odd_sweet_buff",
+        "star_thresholds": [15900, 18500, 22000, 30900],
+        "wish_points": [1120, 1400, 1540, 1750, 2170],
+        "stamina_cost": 20
+    },
     "Shroom Stir Fry": {
         "crafting_type": "kitchen",
         "deck_size": 6,

@@ -161,4 +161,8 @@ class KitchenCrafting(BaseCrafting):
         if state.get('dried_mushroom_buff') and state.get('heat_control_trigger_count', 0) >= 7:
             state['yellow'] += 3
             state['blue'] += 3
+
+        if state.get('odd_sweet_buff') and abs(state['yellow'] - state['blue']) < 5:
+            state['yellow'] += 5
+            state['blue'] += 5
         return state
