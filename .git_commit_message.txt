@@ -1,13 +1,7 @@
-refactor(alchemy): Centralize pre-card effects
+feat: Implement Fireproof Helm buff for Forging crafting
 
-This commit refactors the `AlchemyCrafting` class to centralize the application of pre-card effects, improving maintainability and adhering to the DRY principle.
-
-Previously, the `_apply_enchant_debuff`, `_apply_warmdust_deck_buff`, and `_apply_calming_warmdust_deck_buff` methods were redundantly called at the beginning of each individual card function (`ingredient`, `grind`, `enchant`, `distill`).
-
-Changes include:
-- Added a new `apply_pre_card_effects` hook to the `BaseCrafting` class, providing a generic point for pre-card logic.
-- Overrode this hook in `AlchemyCrafting` to consolidate the specific pre-card effect calls.
-- Updated the `CardSimulator` to call this new `apply_pre_card_effects` hook before executing each card's main function.
-- Removed the redundant pre-card effect calls from the individual card methods in `AlchemyCrafting`.
-
-This refactoring streamlines the card logic, making it easier to add or modify pre-card effects in the future without repetitive code changes.
+Adds the 'fireproof_helm_buff' to the Forging crafting type.
+- The first three 'Forge' cards played while this buff is active will
+  affect both yellow and blue colors, regardless of other conditions.
+- Tracks the number of 'Forge' cards played with a new state variable
+  'fireproof_helm_forge_count'.
