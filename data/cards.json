@@ -107,7 +107,7 @@
         },
         {
             "card_name": "Overload",
-            "card_quantity": 0,
+            "card_quantity": 2,
             "card_function": "Highest color +40; random color -3 for each future card triggered."
         }
     ]
