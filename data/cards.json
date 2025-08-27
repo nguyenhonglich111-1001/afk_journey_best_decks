@@ -9,7 +9,7 @@
                 "correction_factor": 1.0,
                 "max_attempts": 10
             },
-            "card_function": "Random color +8, with a 50% change to trigger again. Max 10 re-triggers."
+            "card_function": "Random color +12, with a 50% change to trigger again. Max 10 re-triggers."
         },
         {
             "card_name": "Cut",
@@ -25,7 +25,7 @@
         {
             "card_name": "Slow Cook",
             "card_function": "All future Heat Control flips gain +2 to both colors.",
-            "card_quantity": 2
+            "card_quantity": 4
         },
         {
             "card_name": "Ferment",
@@ -42,7 +42,7 @@
     "forging": [
         {
             "card_name": "Reforge",
-            "card_quantity": 1,
+            "card_quantity": 2,
             "card_function": "All future Artisan cards grant +3 to both colors. This effect stacks."
         },
         {
@@ -53,7 +53,7 @@
         },
         {
             "card_name": "Forge",
-            "card_function": "Random color +5.",
+            "card_function": "Random color +10.",
             "card_quantity": 3,
             "attribute": "Artisan"
         },
@@ -64,7 +64,7 @@
         },
         {
             "card_name": "Heat Up",
-            "card_function": "All future cards attribute Artisan gain +6",
+            "card_function": "All future cards attribute Artisan gain +10",
             "card_quantity": 2
         },
         {

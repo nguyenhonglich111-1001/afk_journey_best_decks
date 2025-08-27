@@ -105,7 +105,7 @@ class ForgingCrafting(BaseCrafting):
         # If Fireproof Helm buff is active for this specific Forge card
         if state.get('temp_fireproof_helm_active', False):
             artisan_bonus = state.get('artisan_bonus', 0)
-            bonus = 5 + artisan_bonus
+            bonus = 10 + artisan_bonus
             state['yellow'] += bonus
             state['blue'] += bonus
             # Apply the Reforge bonus if active
@@ -123,7 +123,7 @@ class ForgingCrafting(BaseCrafting):
             state['blue'] += reforge_bonus
             
         artisan_bonus = state.get('artisan_bonus', 0)
-        bonus = 5 + artisan_bonus
+        bonus = 10 + artisan_bonus
 
         # Check for the Carve Box buff, which affects the first Forge card
         is_first_forge = not state.get('first_forge_played', False)
@@ -157,7 +157,7 @@ class ForgingCrafting(BaseCrafting):
         """
         All future cards with attribute Artisan gain +3.
         """
-        state['artisan_bonus'] = state.get('artisan_bonus', 0) + 6
+        state['artisan_bonus'] = state.get('artisan_bonus', 0) + 10
         return state
 
     def charge(self, state: State) -> State:
