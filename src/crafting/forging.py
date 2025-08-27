@@ -30,7 +30,16 @@ class ForgingCrafting(BaseCrafting):
 
     def _wrapped_forge(self, state: State) -> State:
         state['artisan_cards_played_count'] = state.get('artisan_cards_played_count', 0) + 1
-        return self.forge(state)
+        
+        if state.get('fireproof_helm_buff', False):
+            state['fireproof_helm_forge_count'] = state.get('fireproof_helm_forge_count', 0)
+            if state['fireproof_helm_forge_count'] < 3:
+                state['temp_fireproof_helm_active'] = True
+                state['fireproof_helm_forge_count'] += 1
+
+        state = self.forge(state)
+        state.pop('temp_fireproof_helm_active', None)
+        return state
 
     # --- Card Function Implementations ---
 
@@ -53,7 +62,7 @@ class ForgingCrafting(BaseCrafting):
             # Read the most current bonus values from the state.
             artisan_bonus = state.get('artisan_bonus', 0)
             forge_expert_bonus = state.get('forge_expert_bonus', 0)
-            bonus = 4 + artisan_bonus + forge_expert_bonus
+            bonus = 5 + artisan_bonus + forge_expert_bonus
 
             # Apply the bonus score.
             if state.get('charge_count', 0) > 0:
@@ -65,14 +74,14 @@ class ForgingCrafting(BaseCrafting):
                 state[color] += bonus
             
             # Apply the Reforge bonus if active
-            reforge_bonus = state.get('reforge_bonus', 0)
-            if reforge_bonus > 0:
+            reforge_bonus = state.get('reforge_bonus', False)
+            if reforge_bonus:
                 state['yellow'] += reforge_bonus
                 state['blue'] += reforge_bonus
 
             # CRUCIAL: The bonus pool is only updated by a card's base trigger.
             if is_base_trigger:
-                state['forge_expert_bonus'] += (4 * fe_played_count)
+                state['forge_expert_bonus'] += (5 * fe_played_count)
 
         # --- Main Execution ---
         # The first trigger is always a base trigger.
@@ -80,7 +89,7 @@ class ForgingCrafting(BaseCrafting):
 
         # Check for the Copper Stewpot buff for a chance to trigger again.
         # This trigger is NOT a base trigger and will not update the bonus pool.
-        if state.get('copper_stewpot_buff', False):
+        if state.get('copper_stewpot_buff', False) or state.get('firefang_sword_buff', False):
             if random.random() < 0.30:
                 _trigger_effect(is_base_trigger=False)
         
@@ -91,10 +100,25 @@ class ForgingCrafting(BaseCrafting):
         Random color +3. (Affected by Artisan bonus).
         - Consumes a 'Charge' to affect both colors.
         - The first Forge card played is affected by the 'Carve Box' buff.
+        - The first 3 Forge cards are affected by the 'Fireproof Helm' buff.
         """
+        # If Fireproof Helm buff is active for this specific Forge card
+        if state.get('temp_fireproof_helm_active', False):
+            artisan_bonus = state.get('artisan_bonus', 0)
+            bonus = 5 + artisan_bonus
+            state['yellow'] += bonus
+            state['blue'] += bonus
+            # Apply the Reforge bonus if active
+            reforge_bonus = state.get('reforge_bonus', False)
+            if reforge_bonus:
+                state['yellow'] += reforge_bonus
+                state['blue'] += reforge_bonus
+            state['first_forge_played'] = True # Mark as played for other buffs that check this
+            return state
+
         # Apply the Reforge bonus if active
-        reforge_bonus = state.get('reforge_bonus', 0)
-        if reforge_bonus > 0:
+        reforge_bonus = state.get('reforge_bonus', False)
+        if reforge_bonus:
             state['yellow'] += reforge_bonus
             state['blue'] += reforge_bonus
             
@@ -106,6 +130,7 @@ class ForgingCrafting(BaseCrafting):
         if state.get('carve_box_buff', False) and is_first_forge:
             state['yellow'] += bonus
             state['blue'] += bonus
+            state['first_forge_played'] = True
         # Check for a standard charge
         elif state.get('charge_count', 0) > 0:
             state['yellow'] += bonus
@@ -152,7 +177,7 @@ class ForgingCrafting(BaseCrafting):
         """
         All future Artisan cards grant +3 to both colors. This effect stacks.
         """
-        state['reforge_bonus'] = state.get('reforge_bonus', 0) + 3
+        state['reforge_bonus'] = True 
         return state
 
     def play_card(self, card_name: str, state: State) -> State:

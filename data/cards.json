@@ -81,7 +81,7 @@
     "alchemy": [
         {
             "card_name": "Ingredient",
-            "card_quantity": 3,
+            "card_quantity": 4,
             "card_function": "Highest color +10. lowest color -2."
         },
         {
@@ -107,7 +107,7 @@
         },
         {
             "card_name": "Overload",
-            "card_quantity": 1,
+            "card_quantity": 0,
             "card_function": "Highest color +40; random color -3 for each future card triggered."
         }
     ]
