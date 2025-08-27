@@ -88,6 +88,9 @@ class CardSimulator:
 
             shuffled_deck = random.sample(list(deck), len(deck))
 
+            # Start-of-cycle effects
+            state = self.crafting.apply_start_of_cycle_effects(state, deck)
+
             # On-play effects loop
             for card_name in shuffled_deck:
                 state = self.crafting.apply_pre_card_effects(state)

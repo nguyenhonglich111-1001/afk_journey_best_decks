@@ -65,7 +65,7 @@
         "deck_size": 7,
         "buff_id": "warmdust_deck_buff",
         "description": "Special buff lowest color +1 for each card triggered",
-        "star_thresholds": [960,1170,1760,2040],
+        "star_thresholds": [960, 1170, 1760, 2040],
         "wish_points": [515, 644, 708, 805, 998],
         "stamina_cost": 14
     },
@@ -74,7 +74,7 @@
         "deck_size": 7,
         "buff_id": "calming_warmdust_deck_buff",
         "description": "Special buff Highest color +3 for each card triggered.",
-        "star_thresholds": [1290,1586,2520,2860],
+        "star_thresholds": [1290, 1586, 2520, 2860],
         "wish_points": [515, 644, 708, 805, 998],
         "stamina_cost": 14
     },
@@ -138,5 +138,14 @@
         "star_thresholds": [1290, 1430, 1560, 1870],
         "buff_id": "calmwind_incense_buff",
         "description": "All grind cards trigger 1 extra time."
+    },
+    "Fireward Ring": {
+        "crafting_type": "alchemy",
+        "deck_size": 9,
+        "wish_points": [1120, 1400, 1540, 1750, 2170],
+        "stamina_cost": 20,
+        "star_thresholds": [6110,6630,7160,8200],
+        "buff_id": "fireward_ring_buff",
+        "description": "+15 to random color when Start of production"
     }
 }

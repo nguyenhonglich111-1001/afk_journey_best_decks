@@ -24,8 +24,8 @@
         },
         {
             "card_name": "Slow Cook",
-            "card_function": "All future Heat Control flips gain +2 to both colors.",
-            "card_quantity": 4
+            "card_function": "All future Heat Control flips gain +4 to both colors.",
+            "card_quantity": 2
         },
         {
             "card_name": "Ferment",

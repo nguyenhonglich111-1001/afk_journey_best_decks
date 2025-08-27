@@ -177,7 +177,7 @@ class ForgingCrafting(BaseCrafting):
         """
         All future Artisan cards grant +3 to both colors. This effect stacks.
         """
-        state['reforge_bonus'] = True 
+        state['reforge_bonus'] = state.get('reforge_bonus', 0) + 3
         return state
 
     def play_card(self, card_name: str, state: State) -> State:

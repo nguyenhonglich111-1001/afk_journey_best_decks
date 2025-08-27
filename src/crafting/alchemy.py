@@ -118,6 +118,14 @@ class AlchemyCrafting(BaseCrafting):
                 state['yellow'] += 5
                 state['blue'] += 5
         return state
+    
+    def apply_start_of_cycle_effects(self, state: State, deck: Tuple[str, ...]) -> State:
+        if state.get("fireward_ring_buff", False):
+            # Apply +15 to a random color at the start of production
+            color = self._get_random_color()
+            state[color] += 15
+
+        return state
 
     def play_card(self, card_name: str, state: State) -> State:
         """

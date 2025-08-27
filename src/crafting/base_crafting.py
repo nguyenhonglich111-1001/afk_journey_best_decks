@@ -78,6 +78,13 @@ class BaseCrafting(ABC):
         """
         return state
 
+    def apply_start_of_cycle_effects(self, state: State, deck: Tuple[str, ...]) -> State:
+        """
+        Applies effects for cards that trigger at the start of the crafting process.
+        Base implementation does nothing, to be overridden by subclasses.
+        """
+        return state
+    
     def apply_pre_card_effects(self, state: State) -> State:
         """
         Applies any effects that should trigger before a card's main logic.
