@@ -65,10 +65,9 @@ class ForgingCrafting(BaseCrafting):
             bonus = 5 + artisan_bonus + forge_expert_bonus
 
             # Apply the bonus score.
-            if state.get('charge_count', 0) > 0:
+            if state.get('charge_count', False):
                 state['yellow'] += bonus
                 state['blue'] += bonus
-                state['charge_count'] -= 1
             else:
                 color = self._get_random_color()
                 state[color] += bonus
@@ -81,7 +80,7 @@ class ForgingCrafting(BaseCrafting):
 
             # CRUCIAL: The bonus pool is only updated by a card's base trigger.
             if is_base_trigger:
-                state['forge_expert_bonus'] += (5 * fe_played_count)
+                state['forge_expert_bonus'] = (5 * fe_played_count)
 
         # --- Main Execution ---
         # The first trigger is always a base trigger.
@@ -132,10 +131,10 @@ class ForgingCrafting(BaseCrafting):
             state['blue'] += bonus
             state['first_forge_played'] = True
         # Check for a standard charge
-        elif state.get('charge_count', 0) > 0:
+        elif state.get('charge_count', False):
             state['yellow'] += bonus
             state['blue'] += bonus
-            state['charge_count'] -= 1
+            
         # Default action
         else:
             color = self._get_random_color()
@@ -155,7 +154,7 @@ class ForgingCrafting(BaseCrafting):
 
     def heat_up(self, state: State) -> State:
         """
-        All future cards with attribute Artisan gain +3.
+        All future cards with attribute Artisan gain +10.
         """
         state['artisan_bonus'] = state.get('artisan_bonus', 0) + 10
         return state
@@ -164,7 +163,7 @@ class ForgingCrafting(BaseCrafting):
         """
         Increments the charge counter for future Artisan cards.
         """
-        state['charge_count'] = state.get('charge_count', 0) + 100
+        state['charge_count'] = True
         return state
 
     def multi_forge(self, state: State) -> State:
@@ -194,11 +193,14 @@ class ForgingCrafting(BaseCrafting):
         if state.get('multi_forge_triggers', 0) > 0 and card_def and card_def.get('attribute') == 'Artisan':
             # Trigger the card the initial time
             func(state)
+            state['mf_triggering'] = True 
             # Trigger it the extra times
             for _ in range(state['multi_forge_triggers']):
                 func(state)
             # Deactivate the buff
             state['multi_forge_triggers'] = 0
+            state['mf_triggering'] = False
+
         else:
             func(state)
             

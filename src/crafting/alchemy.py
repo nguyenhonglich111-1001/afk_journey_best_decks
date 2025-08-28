@@ -114,9 +114,9 @@ class AlchemyCrafting(BaseCrafting):
         """Applies the logic for the Fuse card if it's in the deck."""
         if "Fuse" in deck:
             # Check the condition: color point gap is less than 10.
-            if abs(state['yellow'] - state['blue']) < 10:
-                state['yellow'] += 5
-                state['blue'] += 5
+            if abs(state['yellow'] - state['blue']) < 20:
+                state['yellow'] += 10
+                state['blue'] += 10
         return state
     
     def apply_start_of_cycle_effects(self, state: State, deck: Tuple[str, ...]) -> State:

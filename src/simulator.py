@@ -48,7 +48,7 @@ class CardSimulator:
         self.wish_points = wish_points
         self.stamina_cost = stamina_cost
 
-    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 10000) -> Dict[str, Any]:
+    def evaluate_deck(self, deck: Tuple[str, ...], simulations: int = 5000) -> Dict[str, Any]:
         """
         Runs a Monte Carlo simulation for a given deck.
 
