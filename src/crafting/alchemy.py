@@ -84,16 +84,16 @@ class AlchemyCrafting(BaseCrafting):
         """Highest color +10. Lowest color -2."""
         highest_color = self._get_highest_color(state)
         lowest_color = self._get_lowest_color(state)
-        state[highest_color] += 15
-        state[lowest_color] = max(1, state[lowest_color] - 3)
+        state[highest_color] += 20
+        state[lowest_color] = max(1, state[lowest_color] - 4)
         return state
 
     def grind(self, state: State) -> State:
         """Lowest color +4. Highest color -2"""
         highest_color = self._get_highest_color(state)
         lowest_color = self._get_lowest_color(state)
-        state[lowest_color] += 8
-        state[highest_color] = max(1, state[highest_color] - 4)
+        state[lowest_color] += 10
+        state[highest_color] = max(1, state[highest_color] - 5)
 
         return state
 
